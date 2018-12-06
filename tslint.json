@@ -1,0 +1,11 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:latest", "tslint-config-prettier"],
+  "jsRules": {},
+  "rules": {
+    "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+    "no-any": true,
+    "no-inferred-empty-object-type": true
+  },
+  "rulesDirectory": []
+}
