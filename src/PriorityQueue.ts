@@ -17,12 +17,12 @@ type Comparer<T> = (a: T, b: T) => number
  * Creates a min heap
  */
 export function minHeapifyUp<T>(q: T[], i: number, cmp: Comparer<T>): void {
-  const iParent = parent(i)
-
-  // TODO: convert to while loop
-  if (cmp(q[i], q[iParent]) < 0) {
-    swap(q, i, iParent)
-    minHeapifyUp(q, iParent, cmp)
+  let iParent = parent(i)
+  let n = i
+  while (cmp(q[n], q[iParent]) < 0) {
+    swap(q, n, iParent)
+    n = iParent
+    iParent = parent(n)
   }
 }
 
@@ -43,11 +43,12 @@ export function smallest<T>(q: T[], i: number, cmp: Comparer<T>): number {
 }
 
 export function minHeapifyDown<T>(q: T[], i: number, cmp: Comparer<T>): T[] {
-  const iSmallest = smallest(q, i, cmp)
-  if (cmp(q[iSmallest], q[i]) < 0) {
-    swap(q, iSmallest, i)
-    // TODO:  Convert to while loop
-    minHeapifyDown(q, iSmallest, cmp)
+  let n = i
+  let iSmallest = smallest(q, n, cmp)
+  while (cmp(q[iSmallest], q[n]) < 0) {
+    swap(q, iSmallest, n)
+    n = iSmallest
+    iSmallest = smallest(q, n, cmp)
   }
   return q
 }
