@@ -1,72 +1,111 @@
-interface IQueueItem<T> {
+export interface IQueueItem<T> {
   priority: number
   item: T
 }
 
-export class PriorityQueue<T = number> {
-  private readonly queue: Array<IQueueItem<T>> = new Array<IQueueItem<T>>()
+type Queue<T> = Array<IQueueItem<T>>
 
+/**
+ * Returns a - b in case of numbers
+ * ie. a > b ? +1
+ *     a < b ? -1
+ *     a = b ?  0
+ */
+type Comparer<T> = (a: T, b: T) => number
+
+/**
+ * Creates a min heap
+ */
+export function minHeapifyUp<T>(q: T[], i: number, cmp: Comparer<T>): void {
+  const iParent = parent(i)
+
+  // TODO: convert to while loop
+  if (cmp(q[i], q[iParent]) < 0) {
+    swap(q, i, iParent)
+    minHeapifyUp(q, iParent, cmp)
+  }
+}
+
+export function smallest<T>(q: T[], i: number, cmp: Comparer<T>): number {
+  const len = q.length
+  const iLeft = left(i)
+  const iRight = right(i)
+  if (iLeft < len && iRight < len) {
+    return cmp(q[iLeft], q[iRight]) > 0 ? iRight : iLeft
+  }
+  if (iRight < len) {
+    return iRight
+  }
+  if (iLeft < len) {
+    return iLeft
+  }
+  return i
+}
+
+export function minHeapifyDown<T>(q: T[], i: number, cmp: Comparer<T>): T[] {
+  const iSmallest = smallest(q, i, cmp)
+  if (cmp(q[iSmallest], q[i]) < 0) {
+    swap(q, iSmallest, i)
+    // TODO:  Convert to while loop
+    minHeapifyDown(q, iSmallest, cmp)
+  }
+  return q
+}
+
+export function left(i: number): number {
+  return i * 2 + 1
+}
+
+export function right(i: number): number {
+  return i * 2 + 2
+}
+
+/**
+ * Swaps two elements in an array
+ */
+export function swap<T>(q: T[], a: number, b: number): void {
+  const [aItem, bItem] = [q[a], q[b]]
+  q[a] = bItem
+  q[b] = aItem
+}
+
+/**
+ * Returns the parent index in a heap
+ */
+export function parent(i: number): number {
+  return i === 0 ? 0 : Math.floor((i - 1) / 2)
+}
+
+export function priorities<T>(q: PriorityQueue<T>): number[] {
+  return q.queue.map(_ => _.priority)
+}
+
+export function queueComparer<T>(a: IQueueItem<T>, b: IQueueItem<T>): number {
+  return a.priority - b.priority
+}
+export class PriorityQueue<T = number> {
+  public readonly queue: Queue<T> = new Array<IQueueItem<T>>()
   public push(priority: number, item: T): PriorityQueue<T> {
-    this.queue.push({item, priority})
-    this.heapifyUP(this.queue.length - 1)
+    this.queue.push({priority, item})
+    minHeapifyUp(this.queue, this.queue.length - 1, queueComparer)
     return this
+  }
+
+  public peek(): T | undefined {
+    if (this.queue.length === 0) {
+      return undefined
+    }
+    return this.queue[0].item
   }
 
   public pull(): T | undefined {
     const r = this.peek()
-    const last = this.queue.pop()
-    this.queue[0] = last as IQueueItem<T>
-    this.heapifyDN(0)
+    const i = this.queue.pop()
+
+    if (i !== undefined && this.queue.length > 0) {
+      this.queue[0] = i
+      minHeapifyDown(this.queue, 0, queueComparer)
+    }
     return r
-  }
-
-  public peek(): T | undefined {
-    return this.queue[0].item
-  }
-
-  private heapifyUP(i: number): void {
-    const parent = this.parent(i)
-    if (this.queue[parent].priority > this.queue[i].priority) {
-      this.swap(parent, i)
-      this.heapifyUP(parent)
-    }
-  }
-
-  private left(i: number): number {
-    return i * 2 + 1
-  }
-
-  private right(i: number): number {
-    return i * 2 + 2
-  }
-
-  private parent(i: number): number {
-    return Math.floor(i / 2)
-  }
-
-  private swap(a: number, b: number): void {
-    const A = this.queue[a]
-    const B = this.queue[b]
-    this.queue[b] = A
-    this.queue[a] = B
-  }
-
-  // private debugQueue() {
-  //   return this.queue.map(_ => _.priority)
-  // }
-
-  private heapifyDN(i: number): void {
-    const iL = this.left(i)
-    const iR = this.right(i)
-
-    if (iL >= this.queue.length || iR >= this.queue.length) {
-      return
-    }
-
-    const left = this.queue[iL]
-    const right = this.queue[iR]
-    const smallerChildIndex = left.priority < right.priority ? iL : iR
-    this.swap(i, smallerChildIndex)
-    this.heapifyDN(smallerChildIndex)
   }
 }
