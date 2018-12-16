@@ -133,4 +133,15 @@ describe('PriorityQueue', () => {
       assert.deepStrictEqual(smallest([4, 3, 2], 0, cmp), 2)
     })
   })
+  describe('isEmpty()', () => {
+    it('should return true if the queue is empty', () => {
+      const q = Q()
+      assert.equal(q.isEmpty(), true)
+    })
+
+    it('should return false if the queue is NOT empty', () => {
+      const q = Q(1)
+      assert.equal(q.isEmpty(), false)
+    })
+  })
 })

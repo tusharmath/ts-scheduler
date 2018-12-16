@@ -109,4 +109,8 @@ export class PriorityQueue<T = number> {
     }
     return r
   }
+
+  public isEmpty(): boolean {
+    return this.queue.length === 0
+  }
 }
