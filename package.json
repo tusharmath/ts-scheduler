@@ -1,18 +1,45 @@
 {
   "name": "ts-scheduler",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.0-development",
+  "description": "A job scheduler for node and browser environment",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require=ts-node/register --watch-extensions ts test/*.ts"
+    "test": "mocha --ui=tdd --require=ts-node/register --watch-extensions ts test/*.ts",
+    "lint": "tslint --project .",
+    "prepublishOnly": "tsc -d",
+    "prettier": "git ls-files | grep '.ts$' | xargs prettier --write --config=.prettierrc",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once --pro"
   },
-  "author": "",
+  "author": "Tushar Mathur <tusharmath@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.11",
-    "tslint": "^5.11.0",
+    "@types/node": "^10.12.18",
+    "cz-conventional-changelog": "^2.1.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.15.3",
+    "semantic-release": "^15.13.1",
+    "travis-deploy-once": "^5.0.11",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.2",
+    "typescript-tslint-plugin": "^0.2.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "keywords": [
+    "job",
+    "scheduler",
+    "typescript",
+    "priority"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tusharmath/ts-scheduler.git"
   }
 }

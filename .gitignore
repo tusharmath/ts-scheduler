@@ -1,3 +1,7 @@
 node_modules/
-.DS_Store
+*.d.ts
+!global.d.ts
+*.tgz
 *.js
+*.map
+.idea/
