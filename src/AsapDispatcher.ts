@@ -1,7 +1,7 @@
 import {Cancel} from './Cancel'
-import {IDispatcher} from './IDispatcher'
+import {Dispatcher} from './Dispatcher'
 
-export class AsapDispatcher implements IDispatcher {
+export class AsapDispatcher implements Dispatcher {
   private enabled = false
 
   public continue(): boolean {

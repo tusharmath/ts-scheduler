@@ -1,6 +1,6 @@
 import {Cancel} from './Cancel'
 
-export interface IDispatcher {
+export type Dispatcher = {
   continue(): boolean
   dispatch(cb: () => void): Cancel
 }

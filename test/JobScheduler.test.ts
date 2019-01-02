@@ -12,12 +12,20 @@ describe('JobScheduler', () => {
     const result: Array<[number, string]> = []
     const d = new TestDispatcher()
     const s = new JobScheduler(d)
+
+    /**
+     * Inserts the job into the queue
+     */
     const QUE = (t: string) => s.enqueue(() => result.push([d.now(), t]))
+
+    /**
+     * MOV - Moves the dispatcher to the the given time
+     */
     const MOV = (n: number) => d.move(n)
     return [MOV, QUE, result, s]
   }
 
-  it('#1 QUE', () => {
+  it('#1 QUE (ABC)', () => {
     const [M, Q, actual] = createScheduler()
 
     Q('A')
@@ -30,7 +38,7 @@ describe('JobScheduler', () => {
     assert.deepStrictEqual(actual, expected)
   })
 
-  it('#2 QUE', () => {
+  it('#2 QUE -A---', () => {
     const [MOV, QUE, actual] = createScheduler()
 
     MOV(5)
@@ -42,7 +50,7 @@ describe('JobScheduler', () => {
     assert.deepStrictEqual(actual, expected)
   })
 
-  it('#3 QUE', () => {
+  it('#3 QUE  -A--B-C---', () => {
     const [MOV, QUE, actual] = createScheduler()
 
     MOV(5)

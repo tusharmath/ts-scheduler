@@ -1,7 +1,7 @@
 import {Cancel} from './Cancel'
-import {IDispatcher} from './IDispatcher'
+import {Dispatcher} from './Dispatcher'
 
-export class IdleDispatcher implements IDispatcher {
+export class IdleDispatcher implements Dispatcher {
   private id?: number
   private idleDeadline?: IdleDeadline
 
