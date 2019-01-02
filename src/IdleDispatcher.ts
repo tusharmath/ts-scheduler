@@ -1,13 +1,13 @@
 import {Cancel} from './Cancel'
 import {Dispatcher} from './Dispatcher'
 
-export class IdleDispatcher implements Dispatcher {
+class IdleDispatcher implements Dispatcher {
   private id?: number
   private idleDeadline?: IdleDeadline
 
   public dispatch(cb: () => void): Cancel {
-    this.id = requestIdleCallback(idle => {
-      this.idleDeadline = idle
+    this.id = requestIdleCallback(deadline => {
+      this.idleDeadline = deadline
     })
 
     return () => {
@@ -25,3 +25,5 @@ export class IdleDispatcher implements Dispatcher {
     return false
   }
 }
+
+export const idle = (): Dispatcher => new IdleDispatcher()

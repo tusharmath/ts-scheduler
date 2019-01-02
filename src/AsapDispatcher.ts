@@ -1,7 +1,7 @@
 import {Cancel} from './Cancel'
 import {Dispatcher} from './Dispatcher'
 
-export class AsapDispatcher implements Dispatcher {
+class AsapDispatcher implements Dispatcher {
   private enabled = false
 
   public continue(): boolean {
@@ -18,3 +18,5 @@ export class AsapDispatcher implements Dispatcher {
     return () => (this.enabled = false)
   }
 }
+
+export const asap = (): Dispatcher => new AsapDispatcher()

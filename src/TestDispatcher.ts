@@ -1,7 +1,7 @@
 import {Cancel} from './Cancel'
-import {IDispatcher} from './IDispatcher'
+import {Dispatcher} from './Dispatcher'
 
-export class TestDispatcher implements IDispatcher {
+export class TestDispatcher implements Dispatcher {
   private enabled = true
   private time = 0
   private tasks: Array<[number, () => void]> = []
