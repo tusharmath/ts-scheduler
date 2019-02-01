@@ -1676,10 +1676,10 @@ dateformat@^3.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-dbl-linked-list-ds@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/dbl-linked-list-ds/-/dbl-linked-list-ds-1.1.0.tgz#9aed56f5fcb8b74692ad8653d38f108523af4320"
-  integrity sha512-QS4kHWl0ESBvyHXMdz8psyf+PoT9c6eeRlMSMNEeHeAK5233OoEZYkD+9R6LkRSVJzhCHuLjx3IMYg1Q19R0NA==
+dbl-linked-list-ds@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/dbl-linked-list-ds/-/dbl-linked-list-ds-2.0.0.tgz#dc6e4dcdd7e66e280d8d889b1237e40cb9d77fb3"
+  integrity sha512-es1b39hDoufAXojYdlqoHKirpYXfLQtGY+9A+GwsUiS2XNZx58+hSmtmFWGZEA86nb9R1KddyVm56/mDnnJtNQ==
 
 debug@3.1.0:
   version "3.1.0"

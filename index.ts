@@ -1,3 +1,6 @@
 /* tslint:disable:file-name-casing */
 
-export {}
+import {AsapScheduler} from './src/AsapScheduler'
+import {IScheduler} from './src/IScheduler'
+
+export const asap: IScheduler<unknown> = new AsapScheduler()

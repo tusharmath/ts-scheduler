@@ -50,4 +50,15 @@ describe('AsapScheduler', () => {
     await NEXT()
     assert.equal(message, 'TEST_FAILURE')
   })
+
+  it('should run the jobs in order', async () => {
+    const R: number[] = []
+    const asap = new AsapScheduler()
+    asap.add(() => R.push(0), assert.fail)
+    asap.add(() => R.push(1), assert.fail)
+    asap.add(() => R.push(2), assert.fail)
+
+    await NEXT()
+    assert.deepStrictEqual(R, [0, 1, 2])
+  })
 })

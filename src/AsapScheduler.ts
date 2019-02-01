@@ -20,7 +20,7 @@ export class AsapScheduler implements IScheduler<LinkedListNode<JobNode>> {
   }
 
   private onFlush = () => {
-    let elm = this.queue.pop()
+    let elm = this.queue.shift()
 
     while (elm !== undefined) {
       const [job, onError] = elm
@@ -29,7 +29,7 @@ export class AsapScheduler implements IScheduler<LinkedListNode<JobNode>> {
       } catch (e) {
         onError(e)
       }
-      elm = this.queue.pop()
+      elm = this.queue.shift()
     }
   }
 
