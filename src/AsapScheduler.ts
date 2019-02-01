@@ -5,7 +5,7 @@ import {OnError} from './OnError'
 
 type JobNode = [Job, OnError]
 
-export class AsapScheduler implements IScheduler<LinkedListNode<JobNode>> {
+export class AsapScheduler implements IScheduler {
   private queue = new LinkedList<JobNode>()
 
   add(job: Job, onError: OnError): LinkedListNode<[Job, OnError]> {
