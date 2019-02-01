@@ -6,6 +6,7 @@ import {OnError} from './OnError'
 type JobNode = [Job, OnError]
 
 export class AsapScheduler implements IScheduler {
+  private isFlushing = false
   private queue = new LinkedList<JobNode>()
 
   add(job: Job, onError: OnError): LinkedListNode<[Job, OnError]> {
@@ -20,6 +21,7 @@ export class AsapScheduler implements IScheduler {
   }
 
   private onFlush = () => {
+    this.isFlushing = false
     let elm = this.queue.shift()
 
     while (elm !== undefined) {
@@ -34,6 +36,9 @@ export class AsapScheduler implements IScheduler {
   }
 
   private flush(): void {
-    Promise.resolve().then(this.onFlush)
+    if (!this.isFlushing) {
+      this.isFlushing = true
+      Promise.resolve().then(this.onFlush)
+    }
   }
 }
