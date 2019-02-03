@@ -7,7 +7,7 @@
     "test": "mocha --ui=tdd --require=ts-node/register --watch-extensions ts test/*.ts",
     "lint": "tslint --project .",
     "prepublishOnly": "tsc -d",
-    "prettier": "git ls-files | grep '.ts$' | xargs prettier --write --config=.prettierrc",
+    "prettier": "git ls-files | grep -E '.*\\.(ts|md|json)$' | xargs prettier --write --config=.prettierrc",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once --pro"
   },
