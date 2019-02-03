@@ -1,11 +1,10 @@
-import {LinkedListNode} from 'dbl-linked-list-ds'
+import {Cancel} from './Cancel'
 import {Job} from './Job'
-import {OnError} from './OnError'
 
 /**
  * A simple job scheduler API. You can only add/remove jobs
  */
 export interface IScheduler {
-  add(job: Job, onError: OnError): LinkedListNode<[Job, OnError]>
-  remove(id: LinkedListNode<[Job, OnError]>): void
+  asap(job: Job): Cancel
+  delay(job: Job, duration: number): Cancel
 }
