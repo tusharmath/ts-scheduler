@@ -4,7 +4,13 @@ import {Job} from './Job'
 import {OnError} from './OnError'
 
 type JobNode = [Job, OnError]
+const RESOLVED_PROMISE = Promise.resolve()
 
+/**
+ * Compared to Promise.resolve()
+ * 1. This mimics the exact same behavior of Promise.resolve()
+ * 2. It enables devs to efficiently remove elements from the queue.
+ */
 export class AsapScheduler implements IScheduler {
   private isFlushing = false
   private queue = new LinkedList<JobNode>()
@@ -38,7 +44,7 @@ export class AsapScheduler implements IScheduler {
   private flush(): void {
     if (!this.isFlushing) {
       this.isFlushing = true
-      Promise.resolve().then(this.onFlush)
+      RESOLVED_PROMISE.then(this.onFlush)
     }
   }
 }
