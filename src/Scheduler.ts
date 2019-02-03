@@ -1,4 +1,4 @@
-import {LinkedList, LinkedListNode} from 'dbl-linked-list-ds'
+import {LinkedList} from 'dbl-linked-list-ds'
 import {Cancel} from './Cancel'
 import {IScheduler} from './IScheduler'
 import {Job} from './Job'
