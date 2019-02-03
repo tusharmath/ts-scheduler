@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import {TestScheduler} from '../src/TestScheduler'
 
-describe.only('TestScheduler', () => {
+describe('TestScheduler', () => {
   describe('asap()', () => {
     it('should run on the nextTick', () => {
       const marker: number[] = []
