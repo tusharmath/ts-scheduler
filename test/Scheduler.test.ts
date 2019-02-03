@@ -1,23 +1,24 @@
 import * as assert from 'assert'
-import {asap} from '..'
+import {scheduler} from '..'
+import {Scheduler} from '../src/Scheduler'
 
 describe('Scheduler', () => {
   const NEXT = () => Promise.resolve()
   describe('asap', () => {
     it('should execute a job', cb => {
-      asap.asap(cb)
+      scheduler.asap(cb)
     })
 
     it('should wait and then execute', async () => {
       let i = 0
-      asap.asap(() => i++)
+      scheduler.asap(() => i++)
       await NEXT()
       assert.equal(i, 1)
     })
 
     it('should not execute a job when removed', () => {
       let i = 0
-      asap.asap(() => i++)()
+      scheduler.asap(() => i++)()
       assert.equal(i, 0)
     })
 
@@ -25,8 +26,8 @@ describe('Scheduler', () => {
       let i = 10
       const INC = () => i++
       const DBL = () => (i = i * 2)
-      asap.asap(INC)
-      asap.asap(DBL)
+      scheduler.asap(INC)
+      scheduler.asap(DBL)
 
       await NEXT()
       assert.equal(i, 22)
@@ -34,9 +35,9 @@ describe('Scheduler', () => {
 
     it('should run the jobs in order', async () => {
       const R: number[] = []
-      asap.asap(() => R.push(0))
-      asap.asap(() => R.push(1))
-      asap.asap(() => R.push(2))
+      scheduler.asap(() => R.push(0))
+      scheduler.asap(() => R.push(1))
+      scheduler.asap(() => R.push(2))
 
       await NEXT()
       assert.deepStrictEqual(R, [0, 1, 2])
@@ -45,16 +46,35 @@ describe('Scheduler', () => {
     it('should run nested jobs in order', async () => {
       const R: string[] = []
 
-      asap.asap(() => {
+      scheduler.asap(() => {
         R.push('A')
 
-        asap.asap(() => R.push('C'))
+        scheduler.asap(() => R.push('C'))
       })
 
-      asap.asap(() => R.push('B'))
+      scheduler.asap(() => R.push('B'))
 
       await NEXT()
       assert.deepStrictEqual(R, ['A', 'B', 'C'])
+    })
+  })
+
+  describe('delay()', () => {
+    it('should call cb after the given duration', cb => {
+      const duration = 150
+      const start = Date.now()
+      const S = new Scheduler()
+      S.delay(() => {
+        const diff = Date.now() - start
+        assert.ok(diff >= duration, `Expected:${duration}\nActual: ${diff}`)
+        cb()
+      }, duration)
+    })
+
+    it('should be cancellable', cb => {
+      const S = new Scheduler()
+      S.delay(() => cb('Delay was not not cancelled'), 0)()
+      cb()
     })
   })
 })
