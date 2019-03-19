@@ -5,6 +5,7 @@ import {Job} from './Job'
 
 type Time = number
 export class TestScheduler implements IScheduler {
+  // TODO: should be a priority queue
   private Q = new LinkedList<[Job, Time]>()
   private time = 0
 
@@ -44,10 +45,11 @@ export class TestScheduler implements IScheduler {
   }
 
   private flush(): void {
-    const head = this.Q.head()
-    if (head && head.value[1] === this.now()) {
-      this.Q.shift()
-      head.value[0]()
-    }
+    this.Q.forEach(head => {
+      if (head && head.value[1] <= this.now()) {
+        this.Q.remove(head)
+        head.value[0]()
+      }
+    })
   }
 }

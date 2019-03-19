@@ -20,6 +20,27 @@ describe('TestScheduler', () => {
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])
     })
+
+    it('should batch multiple jobs', () => {
+      const marker = new Array<[string, number]>()
+      const S = new TestScheduler()
+      S.asap(() => marker.push(['A', S.now()]))
+      S.asap(() => marker.push(['B', S.now()]))
+      S.run()
+      assert.deepStrictEqual(marker, [['A', 1], ['B', 1]])
+    })
+
+    it('should maintain order for nested callbacks', () => {
+      const marker = new Array<[string, number]>()
+      const S = new TestScheduler()
+      S.asap(() => {
+        marker.push(['A', S.now()])
+        S.asap(() => marker.push(['B', S.now()]))
+      })
+      S.asap(() => marker.push(['C', S.now()]))
+      S.run()
+      assert.deepStrictEqual(marker, [['A', 1], ['C', 1], ['B', 2]])
+    })
   })
 
   describe('delay()', () => {
