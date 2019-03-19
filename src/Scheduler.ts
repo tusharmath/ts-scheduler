@@ -3,11 +3,10 @@ import {Cancel} from './Cancel'
 import {IScheduler} from './IScheduler'
 import {Job} from './Job'
 
-const RESOLVED_PROMISE = Promise.resolve()
-
 export class Scheduler implements IScheduler {
   private isFlushing = false
   private queue = new LinkedList<Job>()
+  constructor(private cb: (cb: () => void) => void) {}
 
   /**
    * Compared to Promise.resolve() asap is a little better —
@@ -43,7 +42,7 @@ export class Scheduler implements IScheduler {
   private flush(): void {
     if (!this.isFlushing) {
       this.isFlushing = true
-      RESOLVED_PROMISE.then(this.onFlush)
+      this.cb(this.onFlush)
     }
   }
 }
