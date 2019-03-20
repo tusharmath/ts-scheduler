@@ -7,4 +7,5 @@ import {Job} from './Job'
 export interface IScheduler {
   asap(job: Job): Cancel
   delay(job: Job, duration: number): Cancel
+  now(): number
 }

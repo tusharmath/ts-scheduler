@@ -6,6 +6,7 @@ import {Job} from './Job'
 export class Scheduler implements IScheduler {
   private isFlushing = false
   private queue = new LinkedList<Job>()
+  private currentTime = Date.now()
   constructor(private cb: (cb: () => void) => void) {}
 
   /**
@@ -26,6 +27,10 @@ export class Scheduler implements IScheduler {
   delay(job: Job, duration: number): Cancel {
     const id = setTimeout(job, duration)
     return () => clearTimeout(id)
+  }
+
+  now(): number {
+    return Date.now() - this.currentTime
   }
 
   private onFlush = () => {
