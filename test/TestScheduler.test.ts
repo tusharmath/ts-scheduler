@@ -62,4 +62,15 @@ describe('TestScheduler', () => {
       assert.deepStrictEqual(marker, [])
     })
   })
+
+  describe('runTo()', () => {
+    it('should run till the given time', () => {
+      const S = new TestScheduler()
+      S.runTo(10)
+      const actual = S.now()
+      const expected = 10
+
+      assert.strictEqual(actual, expected)
+    })
+  })
 })

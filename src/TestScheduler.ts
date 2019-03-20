@@ -35,7 +35,7 @@ export class TestScheduler implements IScheduler {
   }
 
   runTo(n: Time): void {
-    while (this.now() <= n) {
+    while (this.now() < n) {
       this.tick()
     }
   }
