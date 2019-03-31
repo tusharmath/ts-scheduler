@@ -7,7 +7,7 @@ import {Scheduler} from '../src/Scheduler'
 import {TestScheduler} from '../src/TestScheduler'
 
 describe('asap', () => {
-  const delay = () => new Promise(resolve => setTimeout(resolve, 20))
+  const delay = () => new Promise<void>(resolve => setTimeout(resolve, 20))
 
   const insertNestedJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
@@ -112,6 +112,7 @@ describe('asap', () => {
       const markerS = pick(S)
       const markerT = pick(T)
 
+      // tslint:disable-next-line: no-console
       console.log({markerT: markerT.join(''), markerS: markerS.join('')})
       assert.deepStrictEqual(markerS, markerT)
     })
