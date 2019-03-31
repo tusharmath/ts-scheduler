@@ -9,8 +9,7 @@
     "prepublishOnly": "tsc -d",
     "prettier": "git ls-files | grep -E '.*\\.(ts|md|json)$' | xargs prettier --write --config=.prettierrc",
     "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once --pro",
-    "postinstall": "yarn tsc"
+    "travis-deploy-once": "travis-deploy-once --pro"
   },
   "author": "Tushar Mathur <tusharmath@gmail.com>",
   "license": "ISC",
