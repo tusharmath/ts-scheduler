@@ -7,12 +7,12 @@
  * @param maxDuration
  * @constructor
  */
-export const Bailout = (maxDuration: number = 10) => {
+export const Bailout = (maxDuration: number = 100) => {
   const start = Date.now()
   return (): boolean => {
     if (Date.now() - start < maxDuration) {
       return true
     }
-    throw new Error(`ts-scheduler: Bailed out after ${maxDuration} attempts`)
+    throw new Error(`ts-scheduler: Bailed out after ${maxDuration}ms`)
   }
 }
