@@ -4,7 +4,7 @@
   "description": "A job scheduler for node and browser environment",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --ui=tdd --require=ts-node/register --watch-extensions ts test/*.ts",
+    "test": "mocha --ui=tdd --require=./TSNodeRequire.js --watch-extensions ts test/*.ts",
     "lint": "tslint --project .",
     "prepublishOnly": "tsc -d",
     "prettier": "git ls-files | grep -E '.*\\.(ts|md|json)$' | xargs prettier --write --config=.prettierrc",
