@@ -45,6 +45,7 @@
     "url": "https://github.com/tusharmath/ts-scheduler.git"
   },
   "dependencies": {
-    "dbl-linked-list-ds": "^2.0.0"
+    "dbl-linked-list-ds": "^2.0.0",
+    "detect-node": "^2.0.4"
   }
 }
