@@ -35,12 +35,11 @@ export class Scheduler implements IScheduler {
 
   private onFlush = () => {
     this.isFlushing = false
-    let elm = this.queue.shift()
-
-    while (elm !== undefined) {
-      const job = elm
-      job()
-      elm = this.queue.shift()
+    while (this.queue.length > 0) {
+      const job = this.queue.shift()
+      if (job !== undefined) {
+        job()
+      }
     }
   }
 
