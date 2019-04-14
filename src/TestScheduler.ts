@@ -1,8 +1,16 @@
 import {LinkedList} from 'dbl-linked-list-ds'
 import {Bailout} from './Bailout'
 import {Cancel} from './Cancel'
+import {CreateErrorType} from './CreateErrorType'
 import {IScheduler} from './IScheduler'
 import {Job} from './Job'
+
+/**
+ * Thrown when run() is called twice during the same loop.
+ */
+export const ForbiddenNestedRun = CreateErrorType(
+  'calling scheduler.run() inside a scheduled job is forbidden'
+)
 
 /**
  * 1. The scheduler runs based on "ticks"
@@ -16,6 +24,7 @@ export class TestScheduler implements IScheduler {
   private time: number = 0
   private Q = new Map<number, LinkedList<Job>>()
   private jobCount = 0
+  private isRunning = false
 
   asap(job: Job): Cancel {
     this.jobCount++
@@ -32,9 +41,14 @@ export class TestScheduler implements IScheduler {
   }
 
   run(): void {
-    const check = Bailout()
-    while (this.jobCount > 0 && check()) {
-      this.tick()
+    if (!this.isRunning) {
+      this.isRunning = true
+      const check = Bailout()
+      while (this.jobCount > 0 && check()) {
+        this.tick()
+      }
+    } else {
+      throw new ForbiddenNestedRun()
     }
   }
 

@@ -1,5 +1,6 @@
 import {assert} from 'chai'
-import {TestScheduler} from '../src/TestScheduler'
+import {BailoutError} from '../src/Bailout'
+import {ForbiddenNestedRun, TestScheduler} from '../src/TestScheduler'
 
 describe('TestScheduler', () => {
   describe('asap()', () => {
@@ -127,6 +128,18 @@ describe('TestScheduler', () => {
       const S = new TestScheduler()
       S.run()
       assert.strictEqual(S.now(), 0)
+    })
+
+    it('should not bailout on calling run multiple times', () => {
+      const S = new TestScheduler()
+      S.delay(() => assert.doesNotThrow(() => S.run(), BailoutError), 10)
+      S.run()
+    })
+
+    it('should throw on running multiple times', () => {
+      const S = new TestScheduler()
+      S.delay(() => assert.throws(() => S.run(), ForbiddenNestedRun), 10)
+      S.run()
     })
   })
 
