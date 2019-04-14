@@ -1,4 +1,4 @@
-import * as assert from 'assert'
+import {assert} from 'chai'
 import {TestScheduler} from '../src/TestScheduler'
 
 describe('TestScheduler', () => {

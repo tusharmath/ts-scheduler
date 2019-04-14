@@ -1,7 +1,7 @@
 /**
  * Created by tushar on 2019-03-31
  */
-import * as assert from 'assert'
+import {assert} from 'chai'
 import {scheduler} from '../index'
 
 describe('NPM', () => {

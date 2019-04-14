@@ -1,7 +1,7 @@
 /**
  * Created by tushar on 2019-03-26
  */
-import * as assert from 'assert'
+import {assert} from 'chai'
 import {IScheduler} from '../src/IScheduler'
 import {Scheduler} from '../src/Scheduler'
 import {TestScheduler} from '../src/TestScheduler'

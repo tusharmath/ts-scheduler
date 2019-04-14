@@ -1,4 +1,4 @@
-import * as assert from 'assert'
+import {assert} from 'chai'
 import {scheduler} from '../index'
 import {Scheduler} from '../src/Scheduler'
 
