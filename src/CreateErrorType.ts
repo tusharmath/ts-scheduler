@@ -6,8 +6,8 @@ import {SchedulerError} from './SchedulerError'
  * @param cm
  * @constructor
  */
-export const CreateError = <T extends Array<unknown>>(
-  cm: (...t: T) => string
+export const CreateErrorType = <T extends Array<unknown>>(
+  cm: string | ((...t: T) => string)
 ) =>
   class extends SchedulerError {
     private readonly t: T
@@ -18,6 +18,6 @@ export const CreateError = <T extends Array<unknown>>(
     }
 
     protected createMessage(): string {
-      return cm(...this.t)
+      return typeof cm === 'string' ? cm : cm(...this.t)
     }
   }

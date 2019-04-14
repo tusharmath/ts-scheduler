@@ -2,12 +2,12 @@
  * Created by tushar on 2019-03-26
  */
 
-import {CreateError} from './CreateError'
+import {CreateErrorType} from './CreateErrorType'
 
 /**
  * @type ErrorConstructor
  */
-export const BailoutError = CreateError(
+export const BailoutError = CreateErrorType(
   (maxDuration: number) => `bailed out after ${maxDuration}ms`
 )
 
