@@ -10,14 +10,22 @@ export const CreateErrorType = <T extends Array<unknown>>(
   cm: string | ((...t: T) => string)
 ) =>
   class extends SchedulerError {
-    private readonly t: T
+    /**
+     * FIXME: args should be `private`
+     * Bug Reported: https://github.com/Microsoft/TypeScript/issues/17293
+     */
+    public readonly args: T
 
     constructor(...args: T) {
       super()
-      this.t = args
+      this.args = args
     }
 
-    protected createMessage(): string {
-      return typeof cm === 'string' ? cm : cm(...this.t)
+    /**
+     * FIXME: createMessage could be `private` ???
+     * Bug Reported: https://github.com/Microsoft/TypeScript/issues/17293
+     */
+    public createMessage(): string {
+      return typeof cm === 'string' ? cm : cm(...this.args)
     }
   }
