@@ -3,3 +3,4 @@
 import {TestScheduler} from './src/TestScheduler'
 
 export const testScheduler = () => new TestScheduler()
+export {TestScheduler} from './src/TestScheduler'
