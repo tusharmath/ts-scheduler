@@ -141,6 +141,12 @@ describe('TestScheduler', () => {
       S.delay(() => assert.throws(() => S.run(), ForbiddenNestedRun), 10)
       S.run()
     })
+
+    it('should not throw when run is called in a different context', () => {
+      const S = new TestScheduler()
+      S.run()
+      assert.doesNotThrow(() => S.run(), ForbiddenNestedRun)
+    })
   })
 
   describe('nextTick', () => {

@@ -47,6 +47,7 @@ export class TestScheduler implements IScheduler {
       while (this.jobCount > 0 && check()) {
         this.tick()
       }
+      this.isRunning = false
     } else {
       throw new ForbiddenNestedRun()
     }
