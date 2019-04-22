@@ -6,7 +6,6 @@
   "scripts": {
     "test": "mocha --require=./TSNodeRequire.js --watch-extensions ts test/*.ts",
     "lint": "tslint --project .",
-    "postinstall": "yarn tsc",
     "prepublishOnly": "tsc -d",
     "prettier": "git ls-files | grep -E '.*\\.(ts|md|json)$' | xargs prettier --write --config=.prettierrc",
     "semantic-release": "semantic-release",
