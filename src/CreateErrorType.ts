@@ -6,7 +6,7 @@ import {SchedulerError} from './SchedulerError'
  * @param cm
  * @constructor
  */
-export const CreateErrorType = <T extends Array<unknown>>(
+export const CreateErrorType = <T extends unknown[]>(
   cm: string | ((...t: T) => string)
 ) =>
   class extends SchedulerError {
