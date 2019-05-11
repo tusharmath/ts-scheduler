@@ -5,6 +5,7 @@ import {assert} from 'chai'
 import {IScheduler} from '../src/IScheduler'
 import {Scheduler} from '../src/Scheduler'
 import {TestScheduler} from '../src/TestScheduler'
+import {testScheduler} from '../test'
 
 describe('asap', () => {
   const delay = () => new Promise<void>(resolve => setTimeout(resolve, 20))
@@ -77,7 +78,7 @@ describe('asap', () => {
   context('nested jobs', () => {
     it('should mimic Scheduler', async () => {
       const S = new Scheduler(cb => process.nextTick(cb))
-      const T = new TestScheduler()
+      const T = testScheduler()
       const systemMarker = insertNestedJobs(S)
       const testMarker = insertNestedJobs(T)
       T.run() // Manually run the test scheduler
@@ -91,7 +92,7 @@ describe('asap', () => {
   context('parallel jobs', () => {
     it('should mimic Scheduler', async () => {
       const S = new Scheduler(cb => process.nextTick(cb))
-      const T = new TestScheduler()
+      const T = testScheduler()
       const systemMarker = insertParallelJobs(S)
       const testMarker = insertParallelJobs(T)
       T.run() // Manually run the test scheduler
@@ -105,7 +106,7 @@ describe('asap', () => {
   context('random job', () => {
     it('should be consistent', async () => {
       const S = new Scheduler(cb => process.nextTick(cb))
-      const T = new TestScheduler()
+      const T = testScheduler()
       const {pick} = insertRandomJobs([S, T])
       T.run()
       await delay()

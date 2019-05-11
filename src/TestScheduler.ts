@@ -13,6 +13,13 @@ export const ForbiddenNestedRun = check(
   () => 'calling scheduler.run() inside a scheduled job is forbidden'
 )
 
+export type TestSchedulerOptions = {
+  bailout: number
+}
+const DEFAULT_SCHEDULER_OPTIONS: TestSchedulerOptions = {
+  bailout: 100
+}
+
 /**
  * 1. The scheduler runs based on "ticks"
  * 2. A special value called "nextTick" is maintained.
@@ -26,6 +33,14 @@ export class TestScheduler implements IScheduler {
   private Q = new Map<number, LinkedList<Job>>()
   private jobCount = 0
   private isRunning = false
+  private options: TestSchedulerOptions
+
+  constructor(options: Partial<TestSchedulerOptions>) {
+    this.options = {
+      ...DEFAULT_SCHEDULER_OPTIONS,
+      ...options
+    }
+  }
 
   asap(job: Job): Cancel {
     this.jobCount++
@@ -44,7 +59,7 @@ export class TestScheduler implements IScheduler {
   run(): void {
     if (!this.isRunning) {
       this.isRunning = true
-      const checker = Bailout()
+      const checker = Bailout(this.options.bailout)
       while (this.jobCount > 0 && checker()) {
         this.tick()
       }
@@ -55,7 +70,7 @@ export class TestScheduler implements IScheduler {
   }
 
   runTo(n: number): void {
-    const checker = Bailout()
+    const checker = Bailout(this.options.bailout)
     while (this.now() < n && checker()) {
       this.tick()
     }
@@ -92,7 +107,7 @@ export class TestScheduler implements IScheduler {
   }
 
   private flush(): void {
-    const checker = Bailout()
+    const checker = Bailout(this.options.bailout)
     const tick = this.time
     const qElement = this.Q.get(tick)
     while (qElement && qElement.length > 0 && checker()) {

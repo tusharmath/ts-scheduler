@@ -18,7 +18,7 @@ export const BailoutError = check(
  * @param maxDuration
  * @constructor
  */
-export const Bailout = (maxDuration: number = 100) => {
+export const Bailout = (maxDuration: number) => {
   const start = Date.now()
   return (): boolean => {
     if (Date.now() - start < maxDuration) {
