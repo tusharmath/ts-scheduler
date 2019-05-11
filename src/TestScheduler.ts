@@ -1,15 +1,16 @@
+import {check} from 'checked-exceptions'
 import {LinkedList} from 'dbl-linked-list-ds'
 import {Bailout} from './Bailout'
 import {Cancel} from './Cancel'
-import {CreateErrorType} from './CreateErrorType'
 import {IScheduler} from './IScheduler'
 import {Job} from './Job'
 
 /**
  * Thrown when run() is called twice during the same loop.
  */
-export const ForbiddenNestedRun = CreateErrorType(
-  'calling scheduler.run() inside a scheduled job is forbidden'
+export const ForbiddenNestedRun = check(
+  'ForbiddenNestedRun',
+  () => 'calling scheduler.run() inside a scheduled job is forbidden'
 )
 
 /**
@@ -43,8 +44,8 @@ export class TestScheduler implements IScheduler {
   run(): void {
     if (!this.isRunning) {
       this.isRunning = true
-      const check = Bailout()
-      while (this.jobCount > 0 && check()) {
+      const checker = Bailout()
+      while (this.jobCount > 0 && checker()) {
         this.tick()
       }
       this.isRunning = false
@@ -54,8 +55,8 @@ export class TestScheduler implements IScheduler {
   }
 
   runTo(n: number): void {
-    const check = Bailout()
-    while (this.now() < n && check()) {
+    const checker = Bailout()
+    while (this.now() < n && checker()) {
       this.tick()
     }
   }
@@ -91,10 +92,10 @@ export class TestScheduler implements IScheduler {
   }
 
   private flush(): void {
-    const check = Bailout()
+    const checker = Bailout()
     const tick = this.time
     const qElement = this.Q.get(tick)
-    while (qElement && qElement.length > 0 && check()) {
+    while (qElement && qElement.length > 0 && checker()) {
       const headElement = qElement.head()
       if (headElement) {
         headElement.value()

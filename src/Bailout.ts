@@ -2,13 +2,15 @@
  * Created by tushar on 2019-03-26
  */
 
-import {CreateErrorType} from './CreateErrorType'
+import {check} from 'checked-exceptions'
 
 /**
  * @type ErrorConstructor
  */
-export const BailoutError = CreateErrorType(
-  (maxDuration: number) => `bailed out after ${maxDuration}ms`
+
+export const BailoutError = check(
+  'BailoutError',
+  (duration: number) => `bailed out after ${duration}ms`
 )
 
 /**
