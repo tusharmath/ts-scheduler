@@ -2,7 +2,7 @@ import {check} from 'checked-exceptions'
 import {LinkedList} from 'dbl-linked-list-ds'
 import {ICancellable} from '../cancellables/ICancellable'
 import {Bailout} from '../internals/Bailout'
-import {Job} from '../internals/Job'
+import {IJob} from '../internals/IJob'
 import {IScheduler} from './IScheduler'
 
 /**
@@ -30,7 +30,7 @@ export class TestScheduler implements IScheduler {
   public nextTick = 1
 
   private time: number = 0
-  private Q = new Map<number, LinkedList<Job>>()
+  private Q = new Map<number, LinkedList<IJob>>()
   private jobCount = 0
   private isRunning = false
   private options: TestSchedulerOptions
@@ -42,12 +42,12 @@ export class TestScheduler implements IScheduler {
     }
   }
 
-  asap(job: Job): ICancellable {
+  asap(job: IJob): ICancellable {
     this.jobCount++
     return this.insert(this.nextTick, job)
   }
 
-  delay(job: Job, duration: number): ICancellable {
+  delay(job: IJob, duration: number): ICancellable {
     this.jobCount++
     return this.insert(this.now() + duration, job)
   }
@@ -86,17 +86,17 @@ export class TestScheduler implements IScheduler {
     this.nextTick = this.time + 1
   }
 
-  private getList(seq: number): LinkedList<Job> {
+  private getList(seq: number): LinkedList<IJob> {
     const ll = this.Q.get(seq)
     if (ll) {
       return ll
     }
-    const linkedList = new LinkedList<Job>()
+    const linkedList = new LinkedList<IJob>()
     this.Q.set(seq, linkedList)
     return linkedList
   }
 
-  private insert(time: number, job: Job): ICancellable {
+  private insert(time: number, job: IJob): ICancellable {
     const list = this.getList(time)
     const id = list.add(job)
 

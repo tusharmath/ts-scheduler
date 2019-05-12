@@ -2,12 +2,12 @@ import {LinkedList} from 'dbl-linked-list-ds'
 import {ICancellable} from '../cancellables/ICancellable'
 import {NodeCancellable} from '../cancellables/NodeCancellable'
 import {TimerCancellable} from '../cancellables/TimerCancellable'
-import {Job} from '../internals/Job'
+import {IJob} from '../internals/IJob'
 import {IScheduler} from './IScheduler'
 
 export class Scheduler implements IScheduler {
   private isFlushing = false
-  private queue = new LinkedList<Job>()
+  private queue = new LinkedList<IJob>()
   private currentTime = Date.now()
   constructor(private cb: (cb: () => void) => void) {}
 
@@ -16,7 +16,7 @@ export class Scheduler implements IScheduler {
    * 1. This mimics the exact same behavior of Promise.resolve()
    * 2. It enables efficient cancellation of jobs.
    */
-  asap(job: Job): ICancellable {
+  asap(job: IJob): ICancellable {
     const id = this.queue.add(job)
     this.flush()
 
@@ -26,7 +26,7 @@ export class Scheduler implements IScheduler {
   /**
    * Some sugar over the native setTimeout() functionality
    */
-  delay(job: Job, duration: number): ICancellable {
+  delay(job: IJob, duration: number): ICancellable {
     const id = setTimeout(job, duration)
     return new TimerCancellable(id)
   }
