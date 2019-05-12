@@ -2,7 +2,7 @@
  * Created by tushar on 2019-03-26
  */
 import {assert} from 'chai'
-import {Job} from '../src/internals/Job'
+import {Executable} from '../src/internals/Executable'
 import {IScheduler} from '../src/main/IScheduler'
 import {Scheduler} from '../src/main/Scheduler'
 import {testScheduler} from '../test'
@@ -13,16 +13,16 @@ describe('asap', () => {
   const insertNestedJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
     scheduler.asap(
-      new Job(() => {
+      new Executable(() => {
         marker.push('A')
         scheduler.asap(
-          new Job(() => {
+          new Executable(() => {
             marker.push('B')
             scheduler.asap(
-              new Job(() => {
+              new Executable(() => {
                 marker.push('C')
                 scheduler.asap(
-                  new Job(() => {
+                  new Executable(() => {
                     marker.push('D')
                   })
                 )
@@ -37,10 +37,10 @@ describe('asap', () => {
 
   const insertParallelJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
-    scheduler.asap(new Job(() => marker.push('A')))
-    scheduler.asap(new Job(() => marker.push('B')))
-    scheduler.asap(new Job(() => marker.push('C')))
-    scheduler.asap(new Job(() => marker.push('D')))
+    scheduler.asap(new Executable(() => marker.push('A')))
+    scheduler.asap(new Executable(() => marker.push('B')))
+    scheduler.asap(new Executable(() => marker.push('C')))
+    scheduler.asap(new Executable(() => marker.push('D')))
     return marker
   }
 
@@ -62,7 +62,7 @@ describe('asap', () => {
         const id = JobIDSet.shift() as string
         schedulers.forEach(scheduler =>
           scheduler.asap(
-            new Job(() => {
+            new Executable(() => {
               marker.push([scheduler, id])
               if (RandomBoolean()) {
                 insertJob()

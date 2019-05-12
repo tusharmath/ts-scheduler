@@ -3,8 +3,7 @@
  * Created by tushar on 2019-03-20
  */
 
-import {IJob} from '../../src/internals/IJob'
-import {Job} from '../../src/internals/Job'
+import {IExecutable} from '../../src/internals/IExecutable'
 import {IScheduler} from '../../src/main/IScheduler'
 import {BMDeferred} from './BMDeferred'
 
@@ -19,7 +18,7 @@ class Counter {
     return this.count === 0
   }
 }
-class P implements IJob {
+class P implements IExecutable {
   constructor(
     private readonly counter: Counter,
     private readonly d: BMDeferred

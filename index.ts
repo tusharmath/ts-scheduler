@@ -1,11 +1,12 @@
 /* tslint:disable:file-name-casing */
 
 import {GetTicker} from './src/internals/GetTicker'
-import {IJob} from './src/internals/IJob'
+import {IExecutable} from './src/internals/IExecutable'
 import {IScheduler} from './src/main/IScheduler'
 import {Scheduler} from './src/main/Scheduler'
 
-export {IJob} from './src/internals/IJob'
+export {IExecutable} from './src/internals/IExecutable'
+export {Executable} from './src/internals/Executable'
 export {ICancellable} from './src/cancellables/ICancellable'
 export {IScheduler}
 

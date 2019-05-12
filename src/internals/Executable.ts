@@ -1,8 +1,8 @@
 /**
  * Created by tushar on 2019-05-12
  */
-import {IJob} from './IJob'
+import {IExecutable} from './IExecutable'
 
-export class Job implements IJob {
+export class Executable implements IExecutable {
   constructor(public readonly execute: () => void) {}
 }

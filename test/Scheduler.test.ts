@@ -1,6 +1,6 @@
 import {assert} from 'chai'
 import {scheduler} from '../index'
-import {Job} from '../src/internals/Job'
+import {Executable} from '../src/internals/Executable'
 import {Scheduler} from '../src/main/Scheduler'
 
 describe('Scheduler', () => {
@@ -14,14 +14,14 @@ describe('Scheduler', () => {
   describe('asap', () => {
     it('should execute a job', cb => {
       const {sh, flush} = CreateScheduler()
-      sh.asap(new Job(cb))
+      sh.asap(new Executable(cb))
       flush()
     })
 
     it('should wait and then execute', () => {
       const {sh, flush} = CreateScheduler()
       let i = 0
-      sh.asap(new Job(() => i++))
+      sh.asap(new Executable(() => i++))
       flush()
       assert.equal(i, 1)
     })
@@ -30,7 +30,7 @@ describe('Scheduler', () => {
       const {sh, flush} = CreateScheduler()
 
       let i = 0
-      sh.asap(new Job(() => i++)).cancel()
+      sh.asap(new Executable(() => i++)).cancel()
 
       flush()
 
@@ -43,8 +43,8 @@ describe('Scheduler', () => {
       let i = 10
       const INC = () => i++
       const DBL = () => (i = i * 2)
-      sh.asap(new Job(INC))
-      sh.asap(new Job(DBL))
+      sh.asap(new Executable(INC))
+      sh.asap(new Executable(DBL))
 
       flush()
 
@@ -55,9 +55,9 @@ describe('Scheduler', () => {
       const {sh, flush} = CreateScheduler()
 
       const R: number[] = []
-      sh.asap(new Job(() => R.push(0)))
-      sh.asap(new Job(() => R.push(1)))
-      sh.asap(new Job(() => R.push(2)))
+      sh.asap(new Executable(() => R.push(0)))
+      sh.asap(new Executable(() => R.push(1)))
+      sh.asap(new Executable(() => R.push(2)))
 
       flush()
       assert.deepStrictEqual(R, [0, 1, 2])
@@ -68,12 +68,12 @@ describe('Scheduler', () => {
 
       const R: string[] = []
       sh.asap(
-        new Job(() => {
+        new Executable(() => {
           R.push('A')
-          sh.asap(new Job(() => R.push('C')))
+          sh.asap(new Executable(() => R.push('C')))
         })
       )
-      sh.asap(new Job(() => R.push('B')))
+      sh.asap(new Executable(() => R.push('B')))
 
       flush()
       assert.deepStrictEqual(R, ['A', 'B', 'C'])
@@ -85,7 +85,7 @@ describe('Scheduler', () => {
       const duration = 150
       const start = Date.now()
       scheduler.delay(
-        new Job(() => {
+        new Executable(() => {
           const diff = Date.now() - start
           assert.ok(diff >= duration, `Expected:${duration}\nActual: ${diff}`)
           cb()
@@ -96,7 +96,7 @@ describe('Scheduler', () => {
 
     it('should be cancellable', cb => {
       scheduler
-        .delay(new Job(() => cb('Delay was not not cancelled')), 0)
+        .delay(new Executable(() => cb('Delay was not not cancelled')), 0)
         .cancel()
       cb()
     })

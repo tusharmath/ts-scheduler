@@ -1,6 +1,6 @@
 import {assert} from 'chai'
 import {BailoutError} from '../src/internals/Bailout'
-import {Job} from '../src/internals/Job'
+import {Executable} from '../src/internals/Executable'
 import {ForbiddenNestedRun, TestScheduler} from '../src/main/TestScheduler'
 import {testScheduler} from '../test'
 
@@ -9,7 +9,7 @@ describe('TestScheduler', () => {
     it('should run on the time', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.asap(new Job(() => marker.push(S.now())))
+      S.asap(new Executable(() => marker.push(S.now())))
       S.run()
       assert.strictEqual(S.now(), 1)
       assert.deepStrictEqual(marker, [1])
@@ -18,7 +18,7 @@ describe('TestScheduler', () => {
     it('should cancel', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.asap(new Job(() => marker.push(S.now()))).cancel()
+      S.asap(new Executable(() => marker.push(S.now()))).cancel()
       S.run()
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])
@@ -27,8 +27,8 @@ describe('TestScheduler', () => {
     it('should batch multiple jobs', () => {
       const marker = new Array<[string, number]>()
       const S = testScheduler()
-      S.asap(new Job(() => marker.push(['A', S.now()])))
-      S.asap(new Job(() => marker.push(['B', S.now()])))
+      S.asap(new Executable(() => marker.push(['A', S.now()])))
+      S.asap(new Executable(() => marker.push(['B', S.now()])))
       S.run()
       assert.deepStrictEqual(marker, [['A', 1], ['B', 1]])
     })
@@ -37,12 +37,12 @@ describe('TestScheduler', () => {
       const marker = new Array<[string, number]>()
       const S = testScheduler()
       S.asap(
-        new Job(() => {
+        new Executable(() => {
           marker.push(['A', S.now()])
-          S.asap(new Job(() => marker.push(['B', S.now()])))
+          S.asap(new Executable(() => marker.push(['B', S.now()])))
         })
       )
-      S.asap(new Job(() => marker.push(['C', S.now()])))
+      S.asap(new Executable(() => marker.push(['C', S.now()])))
       S.run()
       assert.deepStrictEqual(marker, [['A', 1], ['C', 1], ['B', 1]])
     })
@@ -51,16 +51,16 @@ describe('TestScheduler', () => {
       const marker = new Array<string>()
       const S = testScheduler()
       S.asap(
-        new Job(() => {
+        new Executable(() => {
           marker.push('A' + S.now())
           S.asap(
-            new Job(() => {
+            new Executable(() => {
               marker.push('B' + S.now())
               S.asap(
-                new Job(() => {
+                new Executable(() => {
                   marker.push('C' + S.now())
                   S.asap(
-                    new Job(() => {
+                    new Executable(() => {
                       marker.push('D' + S.now())
                     })
                   )
@@ -81,7 +81,7 @@ describe('TestScheduler', () => {
       assert.strictEqual(S.now(), 100)
 
       // scheduled for 101
-      S.asap(new Job(() => marker.push('A' + S.now())))
+      S.asap(new Executable(() => marker.push('A' + S.now())))
 
       S.run()
       assert.deepStrictEqual(marker, ['A101'])
@@ -92,7 +92,7 @@ describe('TestScheduler', () => {
     it('should run on timeout', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.delay(new Job(() => marker.push(S.now())), 5000)
+      S.delay(new Executable(() => marker.push(S.now())), 5000)
       S.run()
       assert.strictEqual(S.now(), 5000)
       assert.deepStrictEqual(marker, [5000])
@@ -101,7 +101,7 @@ describe('TestScheduler', () => {
     it('should cancel', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.delay(new Job(() => marker.push(S.now())), 1000).cancel()
+      S.delay(new Executable(() => marker.push(S.now())), 1000).cancel()
       S.run()
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])
@@ -110,7 +110,7 @@ describe('TestScheduler', () => {
     it('should not schedule for passed time', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.delay(new Job(() => marker.push(S.now())), -100).cancel()
+      S.delay(new Executable(() => marker.push(S.now())), -100).cancel()
       S.run()
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])
@@ -131,7 +131,7 @@ describe('TestScheduler', () => {
   describe('run()', () => {
     it('should tick once', () => {
       const S = testScheduler()
-      S.asap(new Job(() => void 0))
+      S.asap(new Executable(() => void 0))
       S.run()
       assert.strictEqual(S.now(), 1)
     })
@@ -145,7 +145,7 @@ describe('TestScheduler', () => {
     it('should not bailout on calling run multiple times', () => {
       const S = testScheduler()
       S.delay(
-        new Job(() => assert.doesNotThrow(() => S.run(), BailoutError)),
+        new Executable(() => assert.doesNotThrow(() => S.run(), BailoutError)),
         10
       )
       S.run()
@@ -154,7 +154,7 @@ describe('TestScheduler', () => {
     it('should throw on running multiple times', () => {
       const S = testScheduler()
       S.delay(
-        new Job(() => assert.throws(() => S.run(), ForbiddenNestedRun)),
+        new Executable(() => assert.throws(() => S.run(), ForbiddenNestedRun)),
         10
       )
       S.run()

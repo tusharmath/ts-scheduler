@@ -3,7 +3,6 @@
  */
 
 import isNode = require('detect-node')
-import {IJob} from './IJob'
 
 const promise = Promise.resolve()
 const promiseThen = (cb: () => void) => promise.then(cb)

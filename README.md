@@ -20,7 +20,7 @@ npm i ts-scheduler
 ```ts
 import {scheduler} from 'ts-scheduler'
 
-scheduler.asap(() => console.log('Hi')) // prints "Hi" immediately
+scheduler.asap(new Executable(() => console.log('Hi'))) // prints "Hi" immediately
 ```
 
 **Usage with Cancellation:**
@@ -28,39 +28,41 @@ scheduler.asap(() => console.log('Hi')) // prints "Hi" immediately
 ```ts
 import {scheduler} from 'ts-scheduler'
 
-const cancel = scheduler.asap(() => console.log('Hi'))
+const cancellable = scheduler.asap(new Executable(() => console.log('Hi')))
 
-cancel() // immediately aborts and doesn't print any thing
+cancellable.cancel() // immediately aborts and doesn't print any thing
 ```
 
 # API
 
-## Job
+## Cancellable
 
 ```ts
-() => void
+type Cancellable = {
+  cancel(): void
+}
 ```
 
-`Job` is what you would want to schedule through this library. Its just a function that returns a `void`.
+`Executable` is what you would want to schedule through this library. Its just an object that contains an execute function that returns a `void`.
 
 ## asap(cb)
 
 ```ts
-import {scheduler} from 'ts-scheduler'
+import {scheduler, Executable} from 'ts-scheduler'
 
-const job = () => console.log('Hi')
-const cancel = scheduler.asap(job)
+const executable = new Executable(() => console.log('Hi'))
+const cancel = scheduler.asap(executable)
 ```
 
-Takes in a [Job](#job) that can be scheduled to be called later. It returns a [cancel](#cancel) to abort it from being executed.
+Takes in a [Executable](#executable) that can be scheduled to be called later. It returns a [Cancellable](#cancellable) to abort it from being executed.
 
-## delay(cb, duration)
+## delay(executable, duration)
 
 ```ts
-import {scheduler} from 'ts-scheduler'
+import {scheduler, Executable} from 'ts-scheduler'
 
-const job = () => console.log('Hi')
-const cancel = scheduler.delay(job, 500)
+const executable = new Executable(() => console.log('Hi'))
+const cancellable = scheduler.delay(executable, 500)
 ```
 
 Takes in a function and a duration and calls that function once that duration has elapsed.
@@ -77,21 +79,21 @@ An interface that contains a method `cancel` that when called releases all resou
 
 # Test API
 
-The scheduler comes in with a built-in [TestScheduler]. This helps in writing better tests for modules that are based on this library. Internally it maintains a "queue" of jobs and keeps checking if its time to execute those jobs in an highly efficient manner.
+The scheduler comes in with a built-in [TestScheduler]. This helps in writing better tests for modules that are based on this library. Internally it maintains a "queue" of executables and keeps checking if its time to execute those executables in an highly efficient manner.
 
 **Example:**
 
 ```ts
-import {testScheduler} from 'ts-scheduler/test'
+import {testScheduler, Executable} from 'ts-scheduler/test'
 
 const scheduler = testScheduler()
 
-const job = () => console.log('Hi')
+const executable = new Executable(() => console.log('Hi'))
 
 // will not print anything until run() is called
-scheduler.asap(job)
+scheduler.asap(executable)
 
-// automatically runs all the jobs that have been scheduled.
+// automatically runs all the executables that have been scheduled.
 scheduler.run() // prints "Hi"
 ```
 
@@ -137,19 +139,19 @@ console.log(scheduler.now())
 
 ## run()
 
-Whenever `asap` or `delay` is used to schedule a [Job](#job) its put inside an internal "queue". On calling `run()` all the jobs are executed until the queue becomes empty.
+Whenever `asap` or `delay` is used to schedule an [Executable](#executable) its put inside an internal "queue". On calling `run()` all the executables are executed until the queue becomes empty.
 
 ```ts
-const job0 = () => console.log('Hi')
-const job1 = () => console.log('Bye')
+const executable0 = new Executable(() => console.log('Hi'))
+const executable1 = new Executable(() => console.log('Bye'))
 
-// job is put into its internal queue
-scheduler.delay(job0, 1000)
+// executable is put into its internal queue
+scheduler.delay(executable0, 1000)
 
-// job1 is put in front of the job0
-scheduler.delay(job1, 300)
+// executable1 is put in front of the executable0
+scheduler.delay(executable1, 300)
 
-// Runs the jobs in the correct order
+// Runs the executables in the correct order
 scheduler.run()
 
 // logs: Bye

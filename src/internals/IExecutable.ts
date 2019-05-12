@@ -1,6 +1,6 @@
 /**
  * Represents a unit of work
  */
-export interface IJob {
+export interface IExecutable {
   execute(): void
 }
