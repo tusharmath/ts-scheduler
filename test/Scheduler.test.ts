@@ -1,5 +1,6 @@
 import {assert} from 'chai'
 import {scheduler} from '../index'
+import {Job} from '../src/internals/Job'
 import {Scheduler} from '../src/main/Scheduler'
 
 describe('Scheduler', () => {
@@ -13,14 +14,14 @@ describe('Scheduler', () => {
   describe('asap', () => {
     it('should execute a job', cb => {
       const {sh, flush} = CreateScheduler()
-      sh.asap(cb)
+      sh.asap(new Job(cb))
       flush()
     })
 
     it('should wait and then execute', () => {
       const {sh, flush} = CreateScheduler()
       let i = 0
-      sh.asap(() => i++)
+      sh.asap(new Job(() => i++))
       flush()
       assert.equal(i, 1)
     })
@@ -29,7 +30,7 @@ describe('Scheduler', () => {
       const {sh, flush} = CreateScheduler()
 
       let i = 0
-      sh.asap(() => i++).cancel()
+      sh.asap(new Job(() => i++)).cancel()
 
       flush()
 
@@ -42,8 +43,8 @@ describe('Scheduler', () => {
       let i = 10
       const INC = () => i++
       const DBL = () => (i = i * 2)
-      sh.asap(INC)
-      sh.asap(DBL)
+      sh.asap(new Job(INC))
+      sh.asap(new Job(DBL))
 
       flush()
 
@@ -54,9 +55,9 @@ describe('Scheduler', () => {
       const {sh, flush} = CreateScheduler()
 
       const R: number[] = []
-      sh.asap(() => R.push(0))
-      sh.asap(() => R.push(1))
-      sh.asap(() => R.push(2))
+      sh.asap(new Job(() => R.push(0)))
+      sh.asap(new Job(() => R.push(1)))
+      sh.asap(new Job(() => R.push(2)))
 
       flush()
       assert.deepStrictEqual(R, [0, 1, 2])
@@ -66,11 +67,13 @@ describe('Scheduler', () => {
       const {sh, flush} = CreateScheduler()
 
       const R: string[] = []
-      sh.asap(() => {
-        R.push('A')
-        sh.asap(() => R.push('C'))
-      })
-      sh.asap(() => R.push('B'))
+      sh.asap(
+        new Job(() => {
+          R.push('A')
+          sh.asap(new Job(() => R.push('C')))
+        })
+      )
+      sh.asap(new Job(() => R.push('B')))
 
       flush()
       assert.deepStrictEqual(R, ['A', 'B', 'C'])
@@ -81,15 +84,20 @@ describe('Scheduler', () => {
     it('should call cb after the given duration', cb => {
       const duration = 150
       const start = Date.now()
-      scheduler.delay(() => {
-        const diff = Date.now() - start
-        assert.ok(diff >= duration, `Expected:${duration}\nActual: ${diff}`)
-        cb()
-      }, duration)
+      scheduler.delay(
+        new Job(() => {
+          const diff = Date.now() - start
+          assert.ok(diff >= duration, `Expected:${duration}\nActual: ${diff}`)
+          cb()
+        }),
+        duration
+      )
     })
 
     it('should be cancellable', cb => {
-      scheduler.delay(() => cb('Delay was not not cancelled'), 0).cancel()
+      scheduler
+        .delay(new Job(() => cb('Delay was not not cancelled')), 0)
+        .cancel()
       cb()
     })
   })

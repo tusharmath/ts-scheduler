@@ -2,6 +2,7 @@
  * Created by tushar on 2019-03-26
  */
 import {assert} from 'chai'
+import {Job} from '../src/internals/Job'
 import {IScheduler} from '../src/main/IScheduler'
 import {Scheduler} from '../src/main/Scheduler'
 import {testScheduler} from '../test'
@@ -11,27 +12,35 @@ describe('asap', () => {
 
   const insertNestedJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
-    scheduler.asap(() => {
-      marker.push('A')
-      scheduler.asap(() => {
-        marker.push('B')
-        scheduler.asap(() => {
-          marker.push('C')
-          scheduler.asap(() => {
-            marker.push('D')
+    scheduler.asap(
+      new Job(() => {
+        marker.push('A')
+        scheduler.asap(
+          new Job(() => {
+            marker.push('B')
+            scheduler.asap(
+              new Job(() => {
+                marker.push('C')
+                scheduler.asap(
+                  new Job(() => {
+                    marker.push('D')
+                  })
+                )
+              })
+            )
           })
-        })
+        )
       })
-    })
+    )
     return marker
   }
 
   const insertParallelJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
-    scheduler.asap(() => marker.push('A'))
-    scheduler.asap(() => marker.push('B'))
-    scheduler.asap(() => marker.push('C'))
-    scheduler.asap(() => marker.push('D'))
+    scheduler.asap(new Job(() => marker.push('A')))
+    scheduler.asap(new Job(() => marker.push('B')))
+    scheduler.asap(new Job(() => marker.push('C')))
+    scheduler.asap(new Job(() => marker.push('D')))
     return marker
   }
 
@@ -52,12 +61,14 @@ describe('asap', () => {
       if (JobIDSet.length > 0) {
         const id = JobIDSet.shift() as string
         schedulers.forEach(scheduler =>
-          scheduler.asap(() => {
-            marker.push([scheduler, id])
-            if (RandomBoolean()) {
-              insertJob()
-            }
-          })
+          scheduler.asap(
+            new Job(() => {
+              marker.push([scheduler, id])
+              if (RandomBoolean()) {
+                insertJob()
+              }
+            })
+          )
         )
       }
 

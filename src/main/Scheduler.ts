@@ -3,6 +3,7 @@ import {ICancellable} from '../cancellables/ICancellable'
 import {NodeCancellable} from '../cancellables/NodeCancellable'
 import {TimerCancellable} from '../cancellables/TimerCancellable'
 import {IJob} from '../internals/IJob'
+import {Job} from '../internals/Job'
 import {IScheduler} from './IScheduler'
 
 export class Scheduler implements IScheduler {
@@ -27,7 +28,7 @@ export class Scheduler implements IScheduler {
    * Some sugar over the native setTimeout() functionality
    */
   delay(job: IJob, duration: number): ICancellable {
-    const id = setTimeout(job, duration)
+    const id = setTimeout(() => job.execute(), duration)
     return new TimerCancellable(id)
   }
 
@@ -40,7 +41,7 @@ export class Scheduler implements IScheduler {
     while (this.queue.length > 0) {
       const job = this.queue.shift()
       if (job !== undefined) {
-        job()
+        job.execute()
       }
     }
   }

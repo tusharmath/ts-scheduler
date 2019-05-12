@@ -3,6 +3,7 @@ import {LinkedList} from 'dbl-linked-list-ds'
 import {ICancellable} from '../cancellables/ICancellable'
 import {Bailout} from '../internals/Bailout'
 import {IJob} from '../internals/IJob'
+import {Job} from '../internals/Job'
 import {IScheduler} from './IScheduler'
 
 /**
@@ -115,7 +116,7 @@ export class TestScheduler implements IScheduler {
     while (qElement && qElement.length > 0 && checker()) {
       const headElement = qElement.head()
       if (headElement) {
-        headElement.value()
+        headElement.value.execute()
         qElement.remove(headElement)
         this.jobCount--
       }

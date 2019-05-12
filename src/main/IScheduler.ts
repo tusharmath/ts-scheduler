@@ -6,7 +6,7 @@ import {IJob} from '../internals/IJob'
  */
 export interface IScheduler {
   /**
-   * Schedules the job asap
+   * Schedules job
    * @param job
    */
   asap(job: IJob): ICancellable
