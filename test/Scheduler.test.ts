@@ -1,6 +1,6 @@
 import {assert} from 'chai'
 import {scheduler} from '../index'
-import {Scheduler} from '../src/Scheduler'
+import {Scheduler} from '../src/main/Scheduler'
 
 describe('Scheduler', () => {
   const CreateScheduler = () => {
@@ -29,7 +29,7 @@ describe('Scheduler', () => {
       const {sh, flush} = CreateScheduler()
 
       let i = 0
-      sh.asap(() => i++)()
+      sh.asap(() => i++).cancel()
 
       flush()
 
@@ -89,7 +89,7 @@ describe('Scheduler', () => {
     })
 
     it('should be cancellable', cb => {
-      scheduler.delay(() => cb('Delay was not not cancelled'), 0)()
+      scheduler.delay(() => cb('Delay was not not cancelled'), 0).cancel()
       cb()
     })
   })

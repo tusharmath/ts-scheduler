@@ -1,4 +1,4 @@
-import {IScheduler} from '../../src/IScheduler'
+import {IScheduler} from '../../src/main/IScheduler'
 import {BMDeferred} from './BMDeferred'
 
 export const CreateNestedAsapJob = (

@@ -1,4 +1,4 @@
-import {Scheduler} from '../../src/Scheduler'
+import {Scheduler} from '../../src/main/Scheduler'
 
 /**
  * Created by tushar on 2019-03-20

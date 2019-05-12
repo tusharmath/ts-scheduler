@@ -2,7 +2,7 @@
  * Created by tushar on 2019-03-20
  */
 
-import {IScheduler} from '../../src/IScheduler'
+import {IScheduler} from '../../src/main/IScheduler'
 import {BMDeferred} from './BMDeferred'
 
 export const CreateParallelJob = (

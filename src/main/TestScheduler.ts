@@ -1,9 +1,9 @@
 import {check} from 'checked-exceptions'
 import {LinkedList} from 'dbl-linked-list-ds'
-import {Bailout} from './Bailout'
-import {Cancel} from './Cancel'
+import {ICancellable} from '../cancellables/ICancellable'
+import {Bailout} from '../internals/Bailout'
+import {Job} from '../internals/Job'
 import {IScheduler} from './IScheduler'
-import {Job} from './Job'
 
 /**
  * Thrown when run() is called twice during the same loop.
@@ -42,12 +42,12 @@ export class TestScheduler implements IScheduler {
     }
   }
 
-  asap(job: Job): Cancel {
+  asap(job: Job): ICancellable {
     this.jobCount++
     return this.insert(this.nextTick, job)
   }
 
-  delay(job: Job, duration: number): Cancel {
+  delay(job: Job, duration: number): ICancellable {
     this.jobCount++
     return this.insert(this.now() + duration, job)
   }
@@ -96,13 +96,15 @@ export class TestScheduler implements IScheduler {
     return linkedList
   }
 
-  private insert(time: number, job: Job): Cancel {
+  private insert(time: number, job: Job): ICancellable {
     const list = this.getList(time)
     const id = list.add(job)
 
-    return () => {
-      this.jobCount--
-      list.remove(id)
+    return {
+      cancel: () => {
+        this.jobCount--
+        list.remove(id)
+      }
     }
   }
 

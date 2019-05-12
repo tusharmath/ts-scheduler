@@ -1,6 +1,6 @@
 import {assert} from 'chai'
-import {BailoutError} from '../src/Bailout'
-import {ForbiddenNestedRun, TestScheduler} from '../src/TestScheduler'
+import {BailoutError} from '../src/internals/Bailout'
+import {ForbiddenNestedRun, TestScheduler} from '../src/main/TestScheduler'
 import {testScheduler} from '../test'
 
 describe('TestScheduler', () => {
@@ -17,7 +17,7 @@ describe('TestScheduler', () => {
     it('should cancel', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.asap(() => marker.push(S.now()))()
+      S.asap(() => marker.push(S.now())).cancel()
       S.run()
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])
@@ -90,7 +90,7 @@ describe('TestScheduler', () => {
     it('should cancel', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.delay(() => marker.push(S.now()), 1000)()
+      S.delay(() => marker.push(S.now()), 1000).cancel()
       S.run()
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])
@@ -99,7 +99,7 @@ describe('TestScheduler', () => {
     it('should not schedule for passed time', () => {
       const marker: number[] = []
       const S = testScheduler()
-      S.delay(() => marker.push(S.now()), -100)()
+      S.delay(() => marker.push(S.now()), -100).cancel()
       S.run()
       assert.strictEqual(S.now(), 0)
       assert.deepStrictEqual(marker, [])

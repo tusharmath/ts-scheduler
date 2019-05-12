@@ -2,9 +2,8 @@
  * Created by tushar on 2019-03-26
  */
 import {assert} from 'chai'
-import {IScheduler} from '../src/IScheduler'
-import {Scheduler} from '../src/Scheduler'
-import {TestScheduler} from '../src/TestScheduler'
+import {IScheduler} from '../src/main/IScheduler'
+import {Scheduler} from '../src/main/Scheduler'
 import {testScheduler} from '../test'
 
 describe('asap', () => {

@@ -65,13 +65,15 @@ const cancel = scheduler.delay(job, 500)
 
 Takes in a function and a duration and calls that function once that duration has elapsed.
 
-## Cancel
+## Cancellable
 
 ```ts
-() => void
+type Cancellable = {
+  cancel(): void
+}
 ```
 
-A function that returns void.
+An interface that contains a method `cancel` that when called releases all resources and returns void.
 
 # Test API
 
