@@ -3,13 +3,24 @@ import {ICancellable} from '../cancellables/ICancellable'
 import {NodeCancellable} from '../cancellables/NodeCancellable'
 import {TimerCancellable} from '../cancellables/TimerCancellable'
 import {IExecutable} from '../internals/IExecutable'
+import {Ticker} from '../internals/Ticker'
 import {IScheduler} from './IScheduler'
 
 export class Scheduler implements IScheduler {
+  private static onFlush(ctx: Scheduler): void {
+    ctx.isFlushing = false
+    while (ctx.queue.length > 0) {
+      const job = ctx.queue.shift()
+      if (job !== undefined) {
+        job.execute()
+      }
+    }
+  }
+
   private isFlushing = false
   private queue = new LinkedList<IExecutable>()
   private currentTime = Date.now()
-  constructor(private cb: (cb: () => void) => void) {}
+  constructor(private cb: Ticker<Scheduler>) {}
 
   /**
    * Compared to Promise.resolve() asap is a little better —
@@ -35,20 +46,10 @@ export class Scheduler implements IScheduler {
     return Date.now() - this.currentTime
   }
 
-  private onFlush = () => {
-    this.isFlushing = false
-    while (this.queue.length > 0) {
-      const job = this.queue.shift()
-      if (job !== undefined) {
-        job.execute()
-      }
-    }
-  }
-
   private flush(): void {
     if (!this.isFlushing) {
       this.isFlushing = true
-      this.cb(this.onFlush)
+      this.cb(Scheduler.onFlush, this)
     }
   }
 }

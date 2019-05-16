@@ -4,9 +4,17 @@
 
 import isNode = require('detect-node')
 
-const promise = Promise.resolve()
-const promiseThen = (cb: () => void) => promise.then(cb)
-const processNextTick = (cb: () => void) => process.nextTick(cb)
+/**
+ * Promise based ticker
+ */
+export const promiseThen = <A>(cb: (ctx: A) => void, ctx: A) =>
+  Promise.resolve(ctx).then(cb)
+
+/**
+ * process.nextTick based ticker
+ */
+export const processNextTick = <A>(cb: (ctx: A) => void, ctx: A) =>
+  process.nextTick(cb, ctx)
 
 export const GetTicker = () => {
   return isNode ? processNextTick : promiseThen

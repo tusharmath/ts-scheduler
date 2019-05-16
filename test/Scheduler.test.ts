@@ -1,15 +1,22 @@
 import {assert} from 'chai'
 import {scheduler} from '../index'
 import {Executable} from '../src/internals/Executable'
+import {Ticker} from '../src/internals/Ticker'
 import {Scheduler} from '../src/main/Scheduler'
 
 describe('Scheduler', () => {
-  const CreateScheduler = () => {
-    let run: () => void | undefined
-    const cb = (__: () => void) => {
-      run = __
+  const CreateScheduler = <A>() => {
+    let runner: (ctx: Scheduler) => void | undefined
+    let context: Scheduler
+
+    const ticker: Ticker<Scheduler> = (
+      cb: (ctx: Scheduler) => void,
+      ctx: Scheduler
+    ) => {
+      runner = cb
+      context = ctx
     }
-    return {sh: new Scheduler(cb), flush: () => run()}
+    return {sh: new Scheduler(ticker), flush: () => runner(context)}
   }
   describe('asap', () => {
     it('should execute a job', cb => {
