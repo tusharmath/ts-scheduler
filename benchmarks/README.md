@@ -4,12 +4,12 @@
 
 ```bash
 node benchmarks/MeasureNestedAsap.js
-asap x 1,406 ops/sec ±1.97% (75 runs sampled)
+asap x 2,687 ops/sec ±3.06% (77 runs sampled)
 ```
 
 ## Parallel
 
 ```bash
 node benchmarks/MeasureParallel.js
-parallel x 1,231 ops/sec ±1.69% (75 runs sampled)
+parallel x 1,248 ops/sec ±3.27% (77 runs sampled)
 ```

@@ -1,4 +1,3 @@
-import {LinkedList} from 'dbl-linked-list-ds'
 import {ICancellable} from '../cancellables/ICancellable'
 import {NodeCancellable} from '../cancellables/NodeCancellable'
 import {TimerCancellable} from '../cancellables/TimerCancellable'
@@ -18,7 +17,7 @@ export class Scheduler implements IScheduler {
   }
 
   private isFlushing = false
-  private queue = new LinkedList<IExecutable>()
+  private queue = new Array<IExecutable>()
   private currentTime = Date.now()
   constructor(private cb: Ticker<Scheduler>) {}
 
@@ -28,7 +27,7 @@ export class Scheduler implements IScheduler {
    * 2. It enables efficient cancellation of jobs.
    */
   asap(job: IExecutable): ICancellable {
-    const id = this.queue.add(job)
+    const id = this.queue.push(job) - 1
     this.flush()
 
     return new NodeCancellable(this.queue, id)

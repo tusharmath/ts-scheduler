@@ -2,7 +2,6 @@
  * Created by tushar on 2019-03-20
  */
 
-// tslint:disable-next-line: no-implicit-dependencies
 import * as BM from 'benchmark'
 import {BMDeferred} from './internals/BMDeferred'
 import {CreateParallelJob} from './internals/CreateParallelJobs'

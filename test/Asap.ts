@@ -87,7 +87,7 @@ describe('asap', () => {
 
   context('nested jobs', () => {
     it('should mimic Scheduler', async () => {
-      const S = new Scheduler(cb => process.nextTick(cb))
+      const S = new Scheduler((cb, ctx) => process.nextTick(cb, ctx))
       const T = testScheduler()
       const systemMarker = insertNestedJobs(S)
       const testMarker = insertNestedJobs(T)
@@ -101,7 +101,7 @@ describe('asap', () => {
 
   context('parallel jobs', () => {
     it('should mimic Scheduler', async () => {
-      const S = new Scheduler(cb => process.nextTick(cb))
+      const S = new Scheduler((cb, ctx) => process.nextTick(cb, ctx))
       const T = testScheduler()
       const systemMarker = insertParallelJobs(S)
       const testMarker = insertParallelJobs(T)
@@ -115,7 +115,7 @@ describe('asap', () => {
 
   context('random job', () => {
     it('should be consistent', async () => {
-      const S = new Scheduler(cb => process.nextTick(cb))
+      const S = new Scheduler((cb, ctx) => process.nextTick(cb, ctx))
       const T = testScheduler()
       const {pick} = insertRandomJobs([S, T])
       T.run()
