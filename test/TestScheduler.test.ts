@@ -1,7 +1,7 @@
 import {assert} from 'chai'
 import {BailoutError} from '../src/internals/Bailout'
 import {Executable} from '../src/internals/Executable'
-import {ForbiddenNestedRun, TestScheduler} from '../src/main/TestScheduler'
+import {ForbiddenNestedRun} from '../src/main/TestScheduler'
 import {testScheduler} from '../test'
 
 describe('TestScheduler', () => {

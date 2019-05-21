@@ -1,7 +1,6 @@
 /* tslint:disable:file-name-casing */
 
 import {GetTicker} from './src/internals/GetTicker'
-import {IExecutable} from './src/internals/IExecutable'
 import {IScheduler} from './src/main/IScheduler'
 import {Scheduler} from './src/main/Scheduler'
 
