@@ -13,3 +13,10 @@ asap x 2,687 ops/sec ±3.06% (77 runs sampled)
 node benchmarks/MeasureParallel.js
 parallel x 1,248 ops/sec ±3.27% (77 runs sampled)
 ```
+
+## Cancellations
+
+```bash
+node benchmarks/MeasureCancellation.js
+cancel x 274,371 ops/sec ±21.43% (53 runs sampled)
+```
