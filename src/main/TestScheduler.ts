@@ -7,15 +7,21 @@ import {IScheduler} from './IScheduler'
 
 /**
  * Thrown when run() is called twice during the same loop.
+ * @ignore
  */
 export const ForbiddenNestedRun = check(
   'ForbiddenNestedRun',
   () => 'calling scheduler.run() inside a scheduled job is forbidden'
 )
 
+/**
+ * Options to configure the test scheduler
+ * @ignore
+ */
 export type TestSchedulerOptions = {
   bailout: number
 }
+
 const DEFAULT_SCHEDULER_OPTIONS: TestSchedulerOptions = {
   bailout: 100
 }

@@ -5,6 +5,6 @@
   "excludeProtected": true,
   "mode": "file",
   "out": "docs",
-  "exclude": ["test/**"],
+  "exclude": ["test/**", "benchmarks/**"],
   "theme": "default"
 }

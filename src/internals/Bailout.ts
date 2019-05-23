@@ -5,7 +5,9 @@
 import {check} from 'checked-exceptions'
 
 /**
+ * Exception thrown when the test scheduler keeps running for a really long time.
  * @type ErrorConstructor
+ * @ignore
  */
 
 export const BailoutError = check(

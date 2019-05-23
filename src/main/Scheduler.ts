@@ -5,6 +5,9 @@ import {IExecutable} from '../internals/IExecutable'
 import {Ticker} from '../internals/Ticker'
 import {IScheduler} from './IScheduler'
 
+/**
+ * Default Scheduler
+ */
 export class Scheduler implements IScheduler {
   private static onFlush(ctx: Scheduler): void {
     ctx.isFlushing = false
