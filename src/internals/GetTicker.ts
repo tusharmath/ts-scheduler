@@ -2,7 +2,7 @@
  * Created by tushar on 2019-03-31
  */
 
-import isNode = require('detect-node')
+import {inNode} from 'in-node'
 
 /**
  * Promise based ticker
@@ -17,5 +17,5 @@ export const processNextTick = <A>(cb: (ctx: A) => void, ctx: A) =>
   process.nextTick(cb, ctx)
 
 export const GetTicker = () => {
-  return isNode ? processNextTick : promiseThen
+  return inNode ? processNextTick : promiseThen
 }
