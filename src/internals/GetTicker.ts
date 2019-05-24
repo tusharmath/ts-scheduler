@@ -3,20 +3,25 @@
  */
 
 import {inNode} from 'in-node'
+import {Ticker} from './Ticker'
 
 /**
  * Promise based ticker
  * @ignore
  */
-export const promiseThen = <A>(cb: (ctx: A) => void, ctx: A) =>
-  Promise.resolve(ctx).then(cb)
+export const promiseThen: Ticker = <T extends unknown[]>(
+  cb: (...t: T) => void,
+  ...t: T
+) => Promise.resolve(t).then(args => cb(...args))
 
 /**
  * process.nextTick based ticker
  * @ignore
  */
-export const processNextTick = <A>(cb: (ctx: A) => void, ctx: A) =>
-  process.nextTick(cb, ctx)
+export const processNextTick: Ticker = <T extends unknown[]>(
+  cb: (...t: T) => void,
+  ...t: T
+) => process.nextTick(cb, ...t)
 
 /**
  * Extracts the most efficient ticker based on the env

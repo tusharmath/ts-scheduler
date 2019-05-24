@@ -4,8 +4,6 @@ import {GetTicker} from './src/internals/GetTicker'
 import {IScheduler} from './src/main/IScheduler'
 import {Scheduler} from './src/main/Scheduler'
 
-export {IExecutable} from './src/internals/IExecutable'
-export {Executable} from './src/internals/Executable'
 export {ICancellable} from './src/cancellables/ICancellable'
 export {IScheduler}
 

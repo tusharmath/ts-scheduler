@@ -3,6 +3,7 @@
   "excludeNotExported": true,
   "excludePrivate": true,
   "excludeProtected": true,
+  "listInvalidSymbolLinks": true,
   "mode": "file",
   "out": "docs",
   "exclude": ["test/**", "benchmarks/**"],

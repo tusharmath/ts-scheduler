@@ -1,25 +1,29 @@
 import {ICancellable} from '../cancellables/ICancellable'
-import {IExecutable} from '../internals/IExecutable'
 
 /**
- * A simple job scheduler API. You can only add/remove jobs
+ * A simple job scheduler API.
+ * You can add/remove jobs.
  */
 export interface IScheduler {
   /**
-   * Schedules job
-   * @param job
+   * Calls the function as soon as possible.
+   * Its a replacement for `process.nextTick` and is also cancellable.
+   * In non-node.js environments it fallbacks to various other techniques such as `setTimeout` or `Promise.resolve`.
    */
-  asap(job: IExecutable): ICancellable
+  asap<T extends unknown[]>(fn: (...t: T) => unknown, ...t: T): ICancellable
 
   /**
-   * Schedules the job to run after a certain period of time
-   * @param job
-   * @param duration
+   * Works exactly like `setTimeout` but also returns a [[ICancellable]].
+   * Schedules the job to run after a certain period of time.
    */
-  delay(job: IExecutable, duration: number): ICancellable
+  delay<T extends unknown[], R>(
+    fn: (...t: T) => R,
+    duration: number,
+    ...t: T
+  ): ICancellable
 
   /**
-   * Returns the current tick count
+   * Returns a virtualized version of the time.
    */
   now(): number
 }

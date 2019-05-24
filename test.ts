@@ -1,6 +1,7 @@
 /* tslint:disable:file-name-casing */
 
-import {TestScheduler, TestSchedulerOptions} from './src/main/TestScheduler'
+import {ITestSchedulerOptions} from './src/main/ITestSchedulerOptions'
+import {TestScheduler} from './src/main/TestScheduler'
 
 /**
  * Used for writing tests.
@@ -17,11 +18,11 @@ import {TestScheduler, TestSchedulerOptions} from './src/main/TestScheduler'
  * ```
  *
  */
-export const testScheduler = (options: Partial<TestSchedulerOptions> = {}) =>
+export const testScheduler = (options: Partial<ITestSchedulerOptions> = {}) =>
   new TestScheduler(options)
 export {TestScheduler} from './src/main/TestScheduler'
 
 /**
- * Optional version of [[TestSchedulerOptions]]
+ * Optional version of [[ITestSchedulerOptions]] which is provided as input.
  */
-export type SchedulerOptions = Partial<TestSchedulerOptions>
+export type SchedulerOptions = Partial<ITestSchedulerOptions>

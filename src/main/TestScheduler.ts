@@ -2,8 +2,10 @@ import {check} from 'checked-exceptions'
 import {LinkedList} from 'dbl-linked-list-ds'
 import {ICancellable} from '../cancellables/ICancellable'
 import {Bailout} from '../internals/Bailout'
-import {IExecutable} from '../internals/IExecutable'
+
+import {IFnArg} from '../internals/IFnArgs'
 import {IScheduler} from './IScheduler'
+import {ITestSchedulerOptions} from './ITestSchedulerOptions'
 
 /**
  * Thrown when run() is called twice during the same loop.
@@ -14,48 +16,46 @@ export const ForbiddenNestedRun = check(
   () => 'calling scheduler.run() inside a scheduled job is forbidden'
 )
 
-/**
- * Options to configure the test scheduler
- * @ignore
- */
-export type TestSchedulerOptions = {
-  bailout: number
-}
-
-const DEFAULT_SCHEDULER_OPTIONS: TestSchedulerOptions = {
+const DEFAULT_SCHEDULER_OPTIONS: ITestSchedulerOptions = {
   bailout: 100
 }
 
 /**
- * 1. The scheduler runs based on "ticks"
- * 2. A special value called "nextTick" is maintained.
- * 3. nextTick is increased when everything for the current tick is completed.
- * 4. Asap uses nextTick to schedule work.
+ * TestScheduler tries to mimic the javascript event loop and provides a low level API
+ * to manage the queue. You add add/remove new callbacks also run and then pause
+ * the execution for sometime.
  */
 export class TestScheduler implements IScheduler {
   public nextTick = 1
 
   private time: number = 0
-  private Q = new Map<number, LinkedList<IExecutable>>()
+  private Q = new Map<number, LinkedList<IFnArg<unknown[]>>>()
   private jobCount = 0
   private isRunning = false
-  private options: TestSchedulerOptions
+  private options: ITestSchedulerOptions
 
-  constructor(options: Partial<TestSchedulerOptions>) {
+  constructor(options: Partial<ITestSchedulerOptions>) {
     this.options = {
       ...DEFAULT_SCHEDULER_OPTIONS,
       ...options
     }
   }
 
-  asap(job: IExecutable): ICancellable {
+  asap<T extends unknown[]>(
+    fn: (...t: T) => unknown,
+    ...args: T
+  ): ICancellable {
     this.jobCount++
-    return this.insert(this.nextTick, job)
+    return this.insert(this.nextTick, {fn, args})
   }
 
-  delay(job: IExecutable, duration: number): ICancellable {
+  delay<T extends unknown[]>(
+    fn: (...t: T) => unknown,
+    duration: number,
+    ...args: T
+  ): ICancellable {
     this.jobCount++
-    return this.insert(this.now() + duration, job)
+    return this.insert(this.now() + duration, {fn, args})
   }
 
   now(): number {
@@ -92,17 +92,20 @@ export class TestScheduler implements IScheduler {
     this.nextTick = this.time + 1
   }
 
-  private getList(seq: number): LinkedList<IExecutable> {
+  private getList(seq: number): LinkedList<IFnArg<unknown[]>> {
     const ll = this.Q.get(seq)
     if (ll) {
       return ll
     }
-    const linkedList = new LinkedList<IExecutable>()
+    const linkedList = new LinkedList<IFnArg<unknown[]>>()
     this.Q.set(seq, linkedList)
     return linkedList
   }
 
-  private insert(time: number, job: IExecutable): ICancellable {
+  private insert<T extends unknown[]>(
+    time: number,
+    job: IFnArg<T>
+  ): ICancellable {
     const list = this.getList(time)
     const id = list.add(job)
 
@@ -121,7 +124,7 @@ export class TestScheduler implements IScheduler {
     while (qElement && qElement.length > 0 && checker()) {
       const headElement = qElement.head()
       if (headElement) {
-        headElement.value.execute()
+        headElement.value.fn(...headElement.value.args)
         qElement.remove(headElement)
         this.jobCount--
       }

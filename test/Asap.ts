@@ -2,7 +2,7 @@
  * Created by tushar on 2019-03-26
  */
 import {assert} from 'chai'
-import {Executable} from '../src/internals/Executable'
+
 import {IScheduler} from '../src/main/IScheduler'
 import {Scheduler} from '../src/main/Scheduler'
 import {testScheduler} from '../test'
@@ -12,35 +12,27 @@ describe('asap', () => {
 
   const insertNestedJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
-    scheduler.asap(
-      new Executable(() => {
-        marker.push('A')
-        scheduler.asap(
-          new Executable(() => {
-            marker.push('B')
-            scheduler.asap(
-              new Executable(() => {
-                marker.push('C')
-                scheduler.asap(
-                  new Executable(() => {
-                    marker.push('D')
-                  })
-                )
-              })
-            )
+    scheduler.asap(() => {
+      marker.push('A')
+      scheduler.asap(() => {
+        marker.push('B')
+        scheduler.asap(() => {
+          marker.push('C')
+          scheduler.asap(() => {
+            marker.push('D')
           })
-        )
+        })
       })
-    )
+    })
     return marker
   }
 
   const insertParallelJobs = (scheduler: IScheduler) => {
     const marker = new Array<string>()
-    scheduler.asap(new Executable(() => marker.push('A')))
-    scheduler.asap(new Executable(() => marker.push('B')))
-    scheduler.asap(new Executable(() => marker.push('C')))
-    scheduler.asap(new Executable(() => marker.push('D')))
+    scheduler.asap(() => marker.push('A'))
+    scheduler.asap(() => marker.push('B'))
+    scheduler.asap(() => marker.push('C'))
+    scheduler.asap(() => marker.push('D'))
     return marker
   }
 
@@ -61,14 +53,12 @@ describe('asap', () => {
       if (JobIDSet.length > 0) {
         const id = JobIDSet.shift() as string
         schedulers.forEach(scheduler =>
-          scheduler.asap(
-            new Executable(() => {
-              marker.push([scheduler, id])
-              if (RandomBoolean()) {
-                insertJob()
-              }
-            })
-          )
+          scheduler.asap(() => {
+            marker.push([scheduler, id])
+            if (RandomBoolean()) {
+              insertJob()
+            }
+          })
         )
       }
 
@@ -87,7 +77,7 @@ describe('asap', () => {
 
   context('nested jobs', () => {
     it('should mimic Scheduler', async () => {
-      const S = new Scheduler((cb, ctx) => process.nextTick(cb, ctx))
+      const S = new Scheduler((cb, ...t) => process.nextTick(cb, ...t))
       const T = testScheduler()
       const systemMarker = insertNestedJobs(S)
       const testMarker = insertNestedJobs(T)
@@ -101,7 +91,7 @@ describe('asap', () => {
 
   context('parallel jobs', () => {
     it('should mimic Scheduler', async () => {
-      const S = new Scheduler((cb, ctx) => process.nextTick(cb, ctx))
+      const S = new Scheduler((cb, ...t) => process.nextTick(cb, ...t))
       const T = testScheduler()
       const systemMarker = insertParallelJobs(S)
       const testMarker = insertParallelJobs(T)
@@ -115,7 +105,7 @@ describe('asap', () => {
 
   context('random job', () => {
     it('should be consistent', async () => {
-      const S = new Scheduler((cb, ctx) => process.nextTick(cb, ctx))
+      const S = new Scheduler((cb, ...t) => process.nextTick(cb, ...t))
       const T = testScheduler()
       const {pick} = insertRandomJobs([S, T])
       T.run()

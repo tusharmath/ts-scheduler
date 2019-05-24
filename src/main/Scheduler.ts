@@ -1,7 +1,6 @@
+import {CancelCB} from '../cancellables/CancelCB'
 import {ICancellable} from '../cancellables/ICancellable'
-import {NodeCancellable} from '../cancellables/NodeCancellable'
 import {TimerCancellable} from '../cancellables/TimerCancellable'
-import {IExecutable} from '../internals/IExecutable'
 import {Ticker} from '../internals/Ticker'
 import {IScheduler} from './IScheduler'
 
@@ -9,49 +8,34 @@ import {IScheduler} from './IScheduler'
  * Default Scheduler
  */
 export class Scheduler implements IScheduler {
-  private static onFlush(ctx: Scheduler): void {
-    ctx.isFlushing = false
-    while (ctx.queue.length > 0) {
-      const job = ctx.queue.shift()
-      if (job !== undefined) {
-        job.execute()
-      }
-    }
-  }
-
-  private isFlushing = false
-  private queue = new Array<IExecutable>()
   private currentTime = Date.now()
-  constructor(private cb: Ticker<Scheduler>) {}
+  constructor(private cb: Ticker) {}
 
   /**
    * Compared to Promise.resolve() asap is a little better —
    * 1. This mimics the exact same behavior of Promise.resolve()
    * 2. It enables efficient cancellation of jobs.
    */
-  asap(job: IExecutable): ICancellable {
-    const id = this.queue.push(job) - 1
-    this.flush()
-
-    return new NodeCancellable(this.queue, id)
+  asap<T extends unknown[]>(
+    fn: (...t: T) => unknown,
+    ...args: T
+  ): ICancellable {
+    return new CancelCB(this.cb, fn, args)
   }
 
   /**
    * Some sugar over the native setTimeout() functionality
    */
-  delay(job: IExecutable, duration: number): ICancellable {
-    const id = setTimeout(() => job.execute(), duration)
+  delay<T extends unknown[]>(
+    fn: (...t: T) => unknown,
+    duration: number,
+    ...args: T
+  ): ICancellable {
+    const id = setTimeout(fn, duration, ...args)
     return new TimerCancellable(id)
   }
 
   now(): number {
     return Date.now() - this.currentTime
-  }
-
-  private flush(): void {
-    if (!this.isFlushing) {
-      this.isFlushing = true
-      this.cb(Scheduler.onFlush, this)
-    }
   }
 }
