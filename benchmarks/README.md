@@ -4,19 +4,19 @@
 
 ```bash
 node benchmarks/MeasureNestedAsap.js
-asap x 2,687 ops/sec ±3.06% (77 runs sampled)
+asap x 1,170 ops/sec ±1.82% (78 runs sampled)
 ```
 
 ## Parallel
 
 ```bash
 node benchmarks/MeasureParallel.js
-parallel x 1,248 ops/sec ±3.27% (77 runs sampled)
+parallel x 1,133 ops/sec ±3.03% (80 runs sampled)
 ```
 
 ## Cancellations
 
 ```bash
 node benchmarks/MeasureCancellation.js
-cancel x 274,371 ops/sec ±21.43% (53 runs sampled)
+cancel x 206,648 ops/sec ±43.97% (67 runs sampled)
 ```
