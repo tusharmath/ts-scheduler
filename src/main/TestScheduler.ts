@@ -1,5 +1,5 @@
 import {check} from 'checked-exceptions'
-import {LinkedList} from 'dbl-linked-list-ds'
+import {DoublyLinkedList} from 'standard-data-structures'
 import {ICancellable} from '../cancellables/ICancellable'
 import {Bailout} from '../internals/Bailout'
 
@@ -29,8 +29,7 @@ export class TestScheduler implements IScheduler {
   public nextTick = 1
 
   private time: number = 0
-  private Q = new Map<number, LinkedList<IFnArg<unknown[]>>>()
-  private jobCount = 0
+  private Q = new Map<number, DoublyLinkedList<IFnArg<unknown[]>>>()
   private isRunning = false
   private options: ITestSchedulerOptions
 
@@ -45,7 +44,6 @@ export class TestScheduler implements IScheduler {
     fn: (...t: T) => unknown,
     ...args: T
   ): ICancellable {
-    this.jobCount++
     return this.insert(this.nextTick, {fn, args})
   }
 
@@ -54,7 +52,6 @@ export class TestScheduler implements IScheduler {
     duration: number,
     ...args: T
   ): ICancellable {
-    this.jobCount++
     return this.insert(this.now() + duration, {fn, args})
   }
 
@@ -66,7 +63,7 @@ export class TestScheduler implements IScheduler {
     if (!this.isRunning) {
       this.isRunning = true
       const checker = Bailout(this.options.bailout)
-      while (this.jobCount > 0 && checker()) {
+      while (this.hasJob() && checker()) {
         this.tick()
       }
       this.isRunning = false
@@ -86,18 +83,27 @@ export class TestScheduler implements IScheduler {
     this.runTo(this.now() + n)
   }
 
+  private hasJob(): boolean {
+    for (const _ of this.Q) {
+      if (_[1].length > 0) {
+        return true
+      }
+    }
+    return false
+  }
+
   private tick(): void {
     this.time++
     this.flush()
     this.nextTick = this.time + 1
   }
 
-  private getList(seq: number): LinkedList<IFnArg<unknown[]>> {
+  private getList(seq: number): DoublyLinkedList<IFnArg<unknown[]>> {
     const ll = this.Q.get(seq)
     if (ll) {
       return ll
     }
-    const linkedList = new LinkedList<IFnArg<unknown[]>>()
+    const linkedList = DoublyLinkedList.of<IFnArg<unknown[]>>()
     this.Q.set(seq, linkedList)
     return linkedList
   }
@@ -111,7 +117,6 @@ export class TestScheduler implements IScheduler {
 
     return {
       cancel: () => {
-        this.jobCount--
         list.remove(id)
       }
     }
@@ -121,12 +126,11 @@ export class TestScheduler implements IScheduler {
     const checker = Bailout(this.options.bailout)
     const tick = this.time
     const qElement = this.Q.get(tick)
+
     while (qElement && qElement.length > 0 && checker()) {
-      const headElement = qElement.head()
-      if (headElement) {
-        headElement.value.fn(...headElement.value.args)
-        qElement.remove(headElement)
-        this.jobCount--
+      const headElement = qElement.shift()
+      if (headElement !== undefined) {
+        headElement.fn(...headElement.args)
       }
     }
     this.Q.delete(tick)

@@ -1762,11 +1762,6 @@ dateformat@^3.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-dbl-linked-list-ds@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dbl-linked-list-ds/-/dbl-linked-list-ds-2.0.0.tgz#dc6e4dcdd7e66e280d8d889b1237e40cb9d77fb3"
-  integrity sha512-es1b39hDoufAXojYdlqoHKirpYXfLQtGY+9A+GwsUiS2XNZx58+hSmtmFWGZEA86nb9R1KddyVm56/mDnnJtNQ==
-
 debug@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -5544,6 +5539,11 @@ ssri@^6.0.0, ssri@^6.0.1:
   integrity sha512-3Wge10hNcT1Kur4PDFwEieXSCMCJs/7WvSACcrMYrNp+b8kDL1/0wJch5Ni2WrtwEa2IO8OsVfeKIciKCDx/QA==
   dependencies:
     figgy-pudding "^3.5.1"
+
+standard-data-structures@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/standard-data-structures/-/standard-data-structures-1.7.0.tgz#a6a0efbede42371bd177f833470fc2fd05f3e11d"
+  integrity sha512-jpmYd1+VFc+9nADh7Eh9+iuuVv2367WG0Riz403aSqwKpJCg97eTH7S13UP7kUlGpMjoCMkl108lKjNTd1T+Rg==
 
 static-extend@^0.1.1:
   version "0.1.2"

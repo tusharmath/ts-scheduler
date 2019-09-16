@@ -85,6 +85,22 @@ describe('TestScheduler', () => {
       S.run()
       assert.deepStrictEqual(marker, ['A101'])
     })
+
+    it('should reduce jobCount by one', () => {
+      const marker = new Array<number>()
+      const S = testScheduler({bailout: Infinity})
+      const j1 = S.asap(() => {
+        marker.push(1)
+        j1.cancel()
+      })
+
+      S.asap(() => {
+        marker.push(2)
+      })
+
+      S.run()
+      assert.deepStrictEqual(marker, [1, 2])
+    })
   })
 
   describe('delay()', () => {
