@@ -1,5 +1,5 @@
 import {check} from 'checked-exceptions'
-import {DoublyLinkedList} from 'standard-data-structures'
+import {DoublyLinkedList, Option} from 'standard-data-structures'
 import {ICancellable} from '../cancellables/ICancellable'
 import {Bailout} from '../internals/Bailout'
 
@@ -129,8 +129,8 @@ export class TestScheduler implements IScheduler {
 
     while (qElement && qElement.length > 0 && checker()) {
       const headElement = qElement.shift()
-      if (headElement !== undefined) {
-        headElement.fn(...headElement.args)
+      if (Option.isSome(headElement)) {
+        headElement.value.fn(...headElement.value.args)
       }
     }
     this.Q.delete(tick)
