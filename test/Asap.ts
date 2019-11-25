@@ -6,7 +6,7 @@ import {assert} from 'chai'
 import {testScheduler} from '..'
 import {IScheduler} from '../src/main/IScheduler'
 import {Scheduler} from '../src/main/Scheduler'
-escribe('asap', () => {
+describe('asap', () => {
   const delay = () => new Promise<void>(resolve => setTimeout(resolve, 20))
 
   const insertNestedJobs = (scheduler: IScheduler) => {
