@@ -59,7 +59,6 @@
     "plugins": [
       {"name": "typescript-tslint-plugin", "configFile": "./tslint.json"}
     ],
-    "incremental": true,
-    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
+    "incremental": true
   }
 }

@@ -39,7 +39,10 @@ describe('TestScheduler', () => {
       S.asap(() => marker.push(['A', S.now()]))
       S.asap(() => marker.push(['B', S.now()]))
       S.run()
-      assert.deepStrictEqual(marker, [['A', 1], ['B', 1]])
+      assert.deepStrictEqual(marker, [
+        ['A', 1],
+        ['B', 1]
+      ])
     })
 
     it('should maintain order for nested callbacks', () => {
@@ -51,7 +54,11 @@ describe('TestScheduler', () => {
       })
       S.asap(() => marker.push(['C', S.now()]))
       S.run()
-      assert.deepStrictEqual(marker, [['A', 1], ['C', 1], ['B', 1]])
+      assert.deepStrictEqual(marker, [
+        ['A', 1],
+        ['C', 1],
+        ['B', 1]
+      ])
     })
 
     it('should flush everything before the next tick', () => {
