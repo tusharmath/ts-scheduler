@@ -3,11 +3,10 @@
  */
 import {assert} from 'chai'
 
+import {testScheduler} from '..'
 import {IScheduler} from '../src/main/IScheduler'
 import {Scheduler} from '../src/main/Scheduler'
-import {testScheduler} from '../test'
-
-describe('asap', () => {
+escribe('asap', () => {
   const delay = () => new Promise<void>(resolve => setTimeout(resolve, 20))
 
   const insertNestedJobs = (scheduler: IScheduler) => {

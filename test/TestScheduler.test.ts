@@ -1,8 +1,8 @@
 import {assert} from 'chai'
 import {BailoutError} from '../src/internals/Bailout'
 
+import {testScheduler} from '..'
 import {ForbiddenNestedRun} from '../src/main/TestScheduler'
-import {testScheduler} from '../test'
 
 describe('TestScheduler', () => {
   describe('asap()', () => {
