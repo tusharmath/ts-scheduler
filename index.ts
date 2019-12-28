@@ -10,21 +10,6 @@ import {TestScheduler} from './src/main/TestScheduler'
  * E X P O R T S
  */
 
-/**
- * Used for writing tests.
- *
- * ```ts
- * import {testScheduler} from 'ts-scheduler/test'
- *
- * const scheduler = testScheduler()
- *
- * scheduler.asap({execute: () => console.log('Hi!')})
- *
- * // Doesn't execute until run() is called
- * scheduler.run()
- * ```
- *
- */
 export const testScheduler = (options: Partial<ITestSchedulerOptions> = {}) =>
   new TestScheduler(options)
 
